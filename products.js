@@ -55,6 +55,7 @@ window.VORTAL_PRODUCTS = [
     ],
     "note": "New to it? A seven-step tour walks you through the real table, not a slideshow.",
     "link": { "label": "Play Monopoline", "url": "https://monopoline.vortal.space/" },
+    "source": "https://github.com/UniversalWebX/vortalsiterepo/tree/main/monopoline",
     "visual": "board"
   },
   {
@@ -63,19 +64,19 @@ window.VORTAL_PRODUCTS = [
     "category": "games",
     "status": "released",
     "shade": "iris",
-    "spec": "Browser · online multiplayer · English / فارسی",
-    "summary": "Dots and Boxes on a board of 625 boxes. Make a room, share the code, and take turns drawing lines — close a box to claim it and go again.",
+    "spec": "Browser · online or on one device · English / فارسی",
+    "summary": "Dots and Boxes, rebuilt. Join two dots, close a box to claim it and go again. Play friends online with a room link, pass one device around, or take on the computer.",
     "features": [
-      { "label": "Rooms", "text": "Create a room and share its six-letter code. Friends join from any device." },
-      { "label": "Live cursors", "text": "See every player's cursor and name moving across the board." },
-      { "label": "The board", "text": "25 × 25 boxes. Drag to move around, scroll or slide to zoom." },
-      { "label": "Scoring", "text": "Close a box to claim it and take another turn. A live scoreboard keeps count." },
-      { "label": "On phones", "text": "An on-screen joystick for getting around the board." },
+      { "label": "Rooms", "text": "Create a room and share the link. Up to six players join from any device, and latecomers watch." },
+      { "label": "Four boards", "text": "Quick 5 × 5, Classic 8 × 8, Big 12 × 12, or the 25 × 25 Marathon." },
+      { "label": "Fair play", "text": "The server checks every move, so turns and scores can't be faked." },
+      { "label": "Live cursors", "text": "See where everyone is pointing as they play." },
+      { "label": "One device", "text": "Play the computer, or pass the device between up to four players." },
       { "label": "Two languages", "text": "Switch between English and Persian any time." }
     ],
     "note": "The name is Persian: نقطه بازی, “the dots game”.",
-    "link": { "label": "Play Nokhtebazi", "url": "https://nokhtebazi.onrender.com/" },
-    "source": "https://github.com/UniversalWebX/nokhtebazi",
+    "link": { "label": "Play Nokhtebazi", "url": "https://nokhtebazi.vortal.space/" },
+    "source": "https://github.com/UniversalWebX/vortalsiterepo/tree/main/nokhtebazi",
     "visual": "dots"
   },
   {

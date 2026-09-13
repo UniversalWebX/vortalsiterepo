@@ -1,0 +1,11 @@
+{
+  "name": "nokhtebazi",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dots and Boxes for any number of friends, on Cloudflare Workers.",
+  "scripts": {
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy"
+  }
+}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nokhtebazi</title>
+<meta name="description" content="Dots and Boxes with friends online, on one device, or against the computer. A Vortal game.">
+<meta name="theme-color" content="#0A0711">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Vazirmatn:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body data-screen="home">
+<a class="skip" href="#home">Skip to content</a>
+
+<header class="bar">
+  <a class="brand" href="https://vortal.space/" aria-label="Vortal">
+    <svg class="mark" viewBox="0 0 12 14" shape-rendering="crispEdges" aria-hidden="true">
+      <rect width="12" height="14" fill="#2A1F44"/>
+      <rect x="2" y="2" width="8" height="10" fill="#6A1FCB"/>
+      <rect x="3" y="3" width="2" height="3" fill="#E05BC4"/>
+      <rect x="6" y="6" width="3" height="2" fill="#A862FF"/>
+      <rect x="4" y="9" width="2" height="1" fill="#7B9BFF"/>
+    </svg>
+    <span>Vortal</span>
+  </a>
+  <button class="lang" id="lang" type="button" lang="fa">فارسی</button>
+</header>
+
+<main>
+  <!-- Home: pick a name and colour, then play online or on this device -->
+  <section class="screen home" id="home">
+    <div class="intro">
+      <p class="eyebrow" data-i18n="byVortal">A Vortal game</p>
+      <h1 class="title" data-i18n="title">Nokhtebazi</h1>
+      <p class="subtitle" data-i18n="subtitle">نقطه بازی · the dots game</p>
+      <p class="tagline" data-i18n="tagline">Draw a line. Close a box. Go again.</p>
+      <p class="how" data-i18n="how">Take turns joining two dots. Draw the fourth side of a box to claim it and draw again. Most boxes wins.</p>
+      <canvas class="demo" id="demo" aria-hidden="true"></canvas>
+    </div>
+
+    <div class="panel">
+      <label class="field">
+        <span class="field__label" data-i18n="yourName">Your name</span>
+        <input id="name" maxlength="16" autocomplete="nickname" spellcheck="false">
+      </label>
+      <div class="field">
+        <span class="field__label" data-i18n="colour">Colour</span>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      <div class="field">
+        <span class="field__label" data-i18n="board">Board</span>
+        <div class="choice" id="sizes"></div>
+      </div>
+
+      <div class="block">
+        <h2 data-i18n="online">Play online</h2>
+        <button class="btn btn--solid" id="create" type="button" data-i18n="create">Create a room</button>
+        <form class="join" id="joinForm">
+          <input id="code" maxlength="8" autocomplete="off" spellcheck="false" data-i18n-ph="roomCode" placeholder="Room code" aria-label="Room code">
+          <button class="btn btn--line" type="submit" data-i18n="join">Join</button>
+        </form>
+      </div>
+
+      <div class="block">
+        <h2 data-i18n="local">Play on this device</h2>
+        <div class="choice" id="opponents"></div>
+        <button class="btn btn--line" id="startLocal" type="button" data-i18n="start">Start</button>
+        <button class="btn btn--quiet" id="resume" type="button" data-i18n="resume" hidden>Resume your game</button>
+      </div>
+
+      <p class="error" id="homeError" role="alert" hidden></p>
+    </div>
+  </section>
+
+  <!-- Lobby: share the code, wait for players, host starts -->
+  <section class="screen lobby" id="lobby" hidden>
+    <div class="card">
+      <p class="eyebrow" data-i18n="room">Room</p>
+      <div class="code" id="roomCode">-----</div>
+      <button class="btn btn--line" id="copyLink" type="button" data-i18n="copyLink">Copy invite link</button>
+      <ul class="players" id="lobbyPlayers"></ul>
+      <div class="field">
+        <span class="field__label" data-i18n="board">Board</span>
+        <div class="choice" id="lobbySizes"></div>
+      </div>
+      <button class="btn btn--solid" id="startOnline" type="button" data-i18n="start">Start</button>
+      <p class="note" id="lobbyNote"></p>
+      <button class="btn btn--quiet" id="leaveLobby" type="button" data-i18n="leave">Leave</button>
+    </div>
+  </section>
+
+  <!-- Game: the board fills the screen; the HUD floats over it -->
+  <section class="screen game" id="game" hidden>
+    <canvas id="board" data-i18n-label="boardLabel" aria-label="Game board"></canvas>
+    <div class="hud">
+      <div class="hud__top">
+        <button class="icon-btn" id="leaveGame" type="button" data-i18n-label="leave" aria-label="Leave">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        </button>
+        <div class="turn" id="turn" aria-live="polite"></div>
+        <span class="hud__code" id="hudCode" hidden></span>
+      </div>
+      <ol class="scores" id="scores"></ol>
+      <div class="zoom">
+        <button type="button" id="zoomOut" data-i18n-label="zoomOut" aria-label="Zoom out">&minus;</button>
+        <button type="button" id="zoomFit" data-i18n="fit">Fit</button>
+        <button type="button" id="zoomIn" data-i18n-label="zoomIn" aria-label="Zoom in">+</button>
+      </div>
+      <p class="status" id="status" role="status" hidden></p>
+    </div>
+    <div class="over" id="over" hidden>
+      <div class="card">
+        <p class="eyebrow" data-i18n="gameOver">Game over</p>
+        <h2 class="over__title" id="overTitle"></h2>
+        <ol class="players" id="overScores"></ol>
+        <div class="actions" id="overActions"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

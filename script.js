@@ -75,7 +75,7 @@
         <figure class="viz">
           <div class="viz__head"><span>Dots &amp; boxes</span><span>Illustration</span></div>
           <svg class="dots" viewBox="0 0 360 240" role="img" aria-label="Illustration of a Dots and Boxes game in progress, with two players' lines, claimed boxes, and another player's cursor">${dotsSVG(p)}</svg>
-          <figcaption class="viz__foot"><span>The real board: 25 &times; 25 = 625 boxes</span><span>Close a box, go again</span></figcaption>
+          <figcaption class="viz__foot"><span>Boards from 5 &times; 5 to 25 &times; 25</span><span>Close a box, go again</span></figcaption>
         </figure>`;
     }
     if (p.visual === 'claims') {
