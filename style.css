@@ -268,7 +268,9 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 .release__note { max-width: 56ch; margin: 28px 0 0; font-size: 15px; line-height: 1.55; color: var(--dim); }
-.release__copy > .btn { margin-top: 28px; }
+.release__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.dots { width: 100%; height: auto; background: var(--ground); }
+.dots text { font: 600 11px var(--mono); }
 kbd {
   display: inline-block;
   margin: 0 2px; padding: 3px 8px 2px;
@@ -279,7 +281,7 @@ kbd {
 
 /* ---------- Illustration panels ---------- */
 .viz {
-  display: grid; gap: 14px; margin: 0; padding: 18px; min-width: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin: 0; padding: 18px; min-width: 0;
   background: var(--panel); border: 1px solid var(--line);
   box-shadow: 0 40px 90px -50px var(--accent, var(--portal));
 }

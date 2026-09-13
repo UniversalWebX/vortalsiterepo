@@ -34,7 +34,50 @@
     return `<div><dt>${esc(f.label)}</dt><dd>${body}</dd></div>`;
   }
 
+  // Dots and Boxes illustration: a seeded game in progress, two players' lines and claimed boxes.
+  function dotsSVG(p) {
+    const COLS = 8, ROWS = 5, S = 40, PAD = 20;
+    const players = [V.shadeHex(p.shade), V.shadeHex('orchid')];
+    const r = rng(9);
+    const pick = () => (r() < .58 ? (r() < .5 ? 0 : 1) : -1);   // -1 = not drawn yet
+    const hor = Array.from({ length: (ROWS + 1) * COLS }, pick);
+    const ver = Array.from({ length: ROWS * (COLS + 1) }, pick);
+    const H = (x, y) => hor[y * COLS + x], Vt = (x, y) => ver[y * (COLS + 1) + x];
+    const glow = `glow-${esc(p.id)}`;
+    let out = `<defs><filter id="${glow}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLS; x++) {
+        const sides = [H(x, y), H(x, y + 1), Vt(x, y), Vt(x + 1, y)];
+        if (sides.every(s => s >= 0)) {
+          out += `<rect x="${PAD + x * S + 6}" y="${PAD + y * S + 6}" width="${S - 12}" height="${S - 12}" rx="3" fill="${players[sides[(x + y) % 4]]}" opacity=".35"/>`;
+        }
+      }
+    }
+    const line = (x1, y1, x2, y2, who) => who < 0
+      ? `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#1E1730" stroke-width="5" stroke-linecap="round"/>`
+      : `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${players[who]}" stroke-width="5" stroke-linecap="round" filter="url(#${glow})"/>`;
+    for (let y = 0; y <= ROWS; y++) for (let x = 0; x < COLS; x++) out += line(PAD + x * S, PAD + y * S, PAD + (x + 1) * S, PAD + y * S, H(x, y));
+    for (let y = 0; y < ROWS; y++) for (let x = 0; x <= COLS; x++) out += line(PAD + x * S, PAD + y * S, PAD + x * S, PAD + (y + 1) * S, Vt(x, y));
+    for (let y = 0; y <= ROWS; y++) for (let x = 0; x <= COLS; x++) out += `<circle cx="${PAD + x * S}" cy="${PAD + y * S}" r="3.5" fill="#6E6488"/>`;
+
+    // another player's live cursor, as the game shows it
+    const cx = PAD + 5.5 * S, cy = PAD + 2.45 * S;
+    out += `<circle cx="${cx}" cy="${cy}" r="6" fill="${players[1]}"/>`;
+    out += `<rect x="${cx + 10}" y="${cy - 26}" width="64" height="18" rx="4" fill="rgba(0,0,0,.8)"/>`;
+    out += `<text x="${cx + 18}" y="${cy - 13}" fill="${players[1]}">Player 2</text>`;
+    return out;
+  }
+
   function visualHTML(p) {
+    if (p.visual === 'dots') {
+      return `
+        <figure class="viz">
+          <div class="viz__head"><span>Dots &amp; boxes</span><span>Illustration</span></div>
+          <svg class="dots" viewBox="0 0 360 240" role="img" aria-label="Illustration of a Dots and Boxes game in progress, with two players' lines, claimed boxes, and another player's cursor">${dotsSVG(p)}</svg>
+          <figcaption class="viz__foot"><span>The real board: 25 &times; 25 = 625 boxes</span><span>Close a box, go again</span></figcaption>
+        </figure>`;
+    }
     if (p.visual === 'claims') {
       return `
         <figure class="viz">
@@ -74,7 +117,7 @@
 
   function releaseHTML(p, i) {
     const feats = p.features.filter(f => f.label || f.text);
-    const url = V.safeUrl(p.link.url);
+    const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source);
     return `
       <article class="release${i % 2 ? ' release--flip' : ''}" id="${esc(p.id)}" style="--accent:${V.shadeHex(p.shade)}">
         <div class="release__copy">
@@ -86,7 +129,11 @@
           ${p.summary ? `<p class="release__lede">${esc(p.summary)}</p>` : ''}
           ${feats.length ? `<dl class="features">${feats.map(featureHTML).join('')}</dl>` : ''}
           ${p.note ? `<p class="release__note">${richText(p.note)}</p>` : ''}
-          ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
+          ${url || src ? `
+          <div class="release__actions">
+            ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
+            ${src ? `<a class="btn btn--line" href="${esc(src)}" target="_blank" rel="noopener">View source <span aria-hidden="true">&#8599;</span></a>` : ''}
+          </div>` : ''}
         </div>
         ${visualHTML(p)}
       </article>`;

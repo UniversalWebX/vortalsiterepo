@@ -14,7 +14,7 @@
   };
 
   const CATEGORIES = {
-    games:     { label: 'Game',              group: 'Games',              icon: 'dice',   shade: 'orchid',     blurb: 'Original games and the systems that run them, playable in a browser tab or at the table.' },
+    games:     { label: 'Web game',          group: 'Games',              icon: 'dice',   shade: 'orchid',     blurb: 'Original games and the systems that run them, playable in a browser tab or at the table.' },
     minecraft: { label: 'Minecraft mod',     group: 'Minecraft mods',     icon: 'block',  shade: 'violet',     blurb: 'Big server systems for NeoForge: land, law, money, and war.' },
     gd:        { label: 'Geometry Dash mod', group: 'Geometry Dash mods', icon: 'cube',   shade: 'lavender',   blurb: 'Mods for Geometry Dash players and level creators.' },
     windhawk:  { label: 'Windhawk mod',      group: 'Windhawk mods',      icon: 'window', shade: 'periwinkle', blurb: 'Mods that customize Windows and its programs, built for Windhawk.' },
@@ -23,7 +23,7 @@
   };
 
   const STATUSES = { released: 'Out now', soon: 'Coming soon', hidden: 'Hidden' };
-  const VISUALS = { icon: 'Category icon', claims: 'Claims map', board: 'Board loop' };
+  const VISUALS = { icon: 'Category icon', claims: 'Claims map', board: 'Board loop', dots: 'Dots board' };
 
   const ICONS = {
     dice:   ['#########', '#.......#', '#.#...#.#', '#.......#', '#...#...#', '#.......#', '#.#...#.#', '#.......#', '#########'],
@@ -55,6 +55,7 @@
       features: Array.isArray(p.features) ? p.features.map(f => ({ label: str(f && f.label), text: str(f && f.text) })) : [],
       note: str(p.note),
       link: { label: str(link.label), url: str(link.url) },
+      source: str(p.source),
       visual: VISUALS[p.visual] ? p.visual : 'icon',
     };
   }

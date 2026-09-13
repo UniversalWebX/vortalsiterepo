@@ -13,7 +13,8 @@
     features  List of { "label": "...", "text": "..." }. Put → between words to show steps.
     note      Extra line (optional). Wrap a key in backticks for a keycap: `K`
     link      { "label": "...", "url": "https://..." }. Leave url empty for no button.
-    visual    icon | claims | board
+    source    Link to the code, e.g. a GitHub repo (optional). Adds a "View source" button.
+    visual    icon | claims | board | dots
 */
 window.VORTAL_PRODUCTS = [
   {
@@ -53,8 +54,29 @@ window.VORTAL_PRODUCTS = [
       { "label": "Ledger", "text": "Every payment logged, with stats and final standings." }
     ],
     "note": "New to it? A seven-step tour walks you through the real table, not a slideshow.",
-    "link": { "label": "Play Monopoline", "url": "https://monopoline.onrender.com/" },
+    "link": { "label": "Play Monopoline", "url": "https://monopoline.vortal.space/" },
     "visual": "board"
+  },
+  {
+    "id": "nokhtebazi",
+    "name": "Nokhtebazi",
+    "category": "games",
+    "status": "released",
+    "shade": "iris",
+    "spec": "Browser · online multiplayer · English / فارسی",
+    "summary": "Dots and Boxes on a board of 625 boxes. Make a room, share the code, and take turns drawing lines — close a box to claim it and go again.",
+    "features": [
+      { "label": "Rooms", "text": "Create a room and share its six-letter code. Friends join from any device." },
+      { "label": "Live cursors", "text": "See every player's cursor and name moving across the board." },
+      { "label": "The board", "text": "25 × 25 boxes. Drag to move around, scroll or slide to zoom." },
+      { "label": "Scoring", "text": "Close a box to claim it and take another turn. A live scoreboard keeps count." },
+      { "label": "On phones", "text": "An on-screen joystick for getting around the board." },
+      { "label": "Two languages", "text": "Switch between English and Persian any time." }
+    ],
+    "note": "The name is Persian: نقطه بازی, “the dots game”.",
+    "link": { "label": "Play Nokhtebazi", "url": "https://nokhtebazi.onrender.com/" },
+    "source": "https://github.com/UniversalWebX/nokhtebazi",
+    "visual": "dots"
   },
   {
     "id": "donutduck",
