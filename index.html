@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vortal</title>
+<meta name="description" content="Vortal makes games, Discord bots, physical devices, and mods for Minecraft, Geometry Dash, and Windhawk.">
+<meta name="theme-color" content="#0A0711">
+<meta property="og:title" content="Vortal">
+<meta property="og:description" content="Games, mods, bots, and devices.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14' shape-rendering='crispEdges'%3E%3Crect width='12' height='14' fill='%232A1F44'/%3E%3Crect x='2' y='2' width='8' height='10' fill='%236A1FCB'/%3E%3Crect x='3' y='3' width='2' height='3' fill='%23E05BC4'/%3E%3Crect x='6' y='6' width='3' height='2' fill='%23A862FF'/%3E%3Crect x='4' y='9' width='2' height='1' fill='%237B9BFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="brand" href="#top" aria-label="Vortal, back to top">
+      <svg class="mark" viewBox="0 0 12 14" shape-rendering="crispEdges" aria-hidden="true">
+        <rect width="12" height="14" fill="#2A1F44"/>
+        <rect x="2" y="2" width="8" height="10" fill="#6A1FCB"/>
+        <rect x="3" y="3" width="2" height="3" fill="#E05BC4"/>
+        <rect x="6" y="6" width="3" height="2" fill="#A862FF"/>
+        <rect x="4" y="9" width="2" height="1" fill="#7B9BFF"/>
+        <rect x="7" y="3" width="1" height="1" fill="#D5B2FF"/>
+      </svg>
+      <span class="brand__word">Vortal</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav__links">
+        <li class="menu">
+          <button class="nav__link menu__btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-products">
+            Products
+            <svg class="caret" viewBox="0 0 5 3" shape-rendering="crispEdges" aria-hidden="true"><path d="M0 0h5v1H4v1H3v1H2V2H1V1H0z" fill="currentColor"/></svg>
+          </button>
+          <div class="menu__panel" id="menu-products" hidden></div>
+        </li>
+        <li class="nav__hide-sm"><a class="nav__link" href="#make">What we make</a></li>
+        <li class="nav__hide-sm"><a class="nav__link" href="#next">What's next</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Vortal &middot; studio</p>
+        <h1 class="stack" aria-label="Games, mods, bots, and devices.">
+          <span class="stack__line" style="--dot: var(--orchid)" aria-hidden="true">
+            <span class="stack__word">Games<i>.</i></span>
+            <span class="stack__note">Monopoline &mdash; play it now</span>
+          </span>
+          <span class="stack__line" style="--dot: var(--violet)" aria-hidden="true">
+            <span class="stack__word">Mods<i>.</i></span>
+            <span class="stack__note">Minecraft &middot; Geometry&nbsp;Dash &middot; Windhawk</span>
+          </span>
+          <span class="stack__line" style="--dot: var(--iris)" aria-hidden="true">
+            <span class="stack__word">Bots<i>.</i></span>
+            <span class="stack__note">Discord &mdash; DonutDuck, coming soon</span>
+          </span>
+          <span class="stack__line" style="--dot: var(--periwinkle)" aria-hidden="true">
+            <span class="stack__word">Devices<i>.</i></span>
+            <span class="stack__note">Physical hardware &mdash; coming</span>
+          </span>
+        </h1>
+        <p class="lede">Vortal makes games, Discord bots, physical devices, and mods for Minecraft, Geometry Dash, and Windhawk. Everything we've shipped is below, with more on the way.</p>
+        <div class="cta-row">
+          <a class="btn btn--solid" href="#releases">See the releases</a>
+          <a class="btn btn--line" href="https://monopoline.onrender.com/" target="_blank" rel="noopener">Play Monopoline <span aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+
+      <div class="portal">
+        <div class="portal__glow" aria-hidden="true"></div>
+        <canvas id="portal" width="128" height="144" role="img" aria-label="A pixel-art obsidian portal, lit purple and shimmering"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="releases" id="releases">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Released</h2>
+        <p class="section-head__meta" id="releases-meta"></p>
+      </header>
+      <div id="release-list"></div>
+    </div>
+  </section>
+
+  <section class="soon" id="soon">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Coming soon</h2>
+        <p class="section-head__meta" id="soon-meta"></p>
+      </header>
+      <ul class="soon__list" id="soon-list"></ul>
+    </div>
+  </section>
+
+  <section class="make" id="make">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>What we make</h2>
+        <p class="section-head__meta">Six benches, one studio</p>
+      </header>
+      <ul class="disciplines" id="disciplines"></ul>
+    </div>
+  </section>
+
+  <section class="next" id="next">
+    <div class="wrap next__inner">
+      <svg class="mark mark--lg" viewBox="0 0 12 14" shape-rendering="crispEdges" aria-hidden="true">
+        <rect width="12" height="14" fill="#2A1F44"/>
+        <rect x="2" y="2" width="8" height="10" fill="#6A1FCB"/>
+        <rect x="3" y="3" width="2" height="3" fill="#E05BC4"/>
+        <rect x="6" y="6" width="3" height="2" fill="#A862FF"/>
+        <rect x="4" y="9" width="2" height="1" fill="#7B9BFF"/>
+        <rect x="7" y="3" width="1" height="1" fill="#D5B2FF"/>
+      </svg>
+      <div>
+        <h2>More coming through.</h2>
+        <p id="next-copy">More releases are on the bench now. Check back here for new drops.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <span class="foot__brand"><span class="brand__word">Vortal</span> &copy; 2026</span>
+    <ul class="foot__links" id="foot-links"></ul>
+  </div>
+</footer>
+
+<script src="products.js"></script>
+<script src="store.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
