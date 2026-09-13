@@ -1,223 +1,148 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VORTAL COMING SOON</title>
-    
-    <!-- Import Google Fonts: Orbitron for neon text, Inter for body text -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        :root {
-            --neon-purple: #b92b27; /* Fallback */
-            --neon-purple-glow: #b829ff;
-            --neon-purple-dark: #6a00a8;
-        }
-
-        body {
-            background-color: #050505;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* Background grid for subtle cyberpunk/neon aesthetic */
-        .bg-grid {
-            background-size: 40px 40px;
-            background-image: 
-                linear-gradient(to right, rgba(184, 41, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(184, 41, 255, 0.05) 1px, transparent 1px);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Neon Text Glow */
-        .neon-text {
-            font-family: 'Orbitron', sans-serif;
-            color: #fff;
-            text-shadow:
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px var(--neon-purple-glow),
-                0 0 40px var(--neon-purple-glow),
-                0 0 80px var(--neon-purple-glow),
-                0 0 90px var(--neon-purple-glow);
-            animation: flicker 4s infinite alternate;
-        }
-
-        /* Subtle text glow for smaller headers */
-        .neon-text-subtle {
-            font-family: 'Orbitron', sans-serif;
-            color: #e0b3ff;
-            text-shadow:
-                0 0 5px var(--neon-purple-glow),
-                0 0 10px var(--neon-purple-glow);
-        }
-
-        /* Neon Box Glow for timer and inputs */
-        .neon-box {
-            border: 2px solid var(--neon-purple-glow);
-            background-color: rgba(10, 0, 15, 0.8);
-            box-shadow: 
-                0 0 10px var(--neon-purple-glow),
-                inset 0 0 10px var(--neon-purple-glow);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .neon-box:hover {
-            box-shadow: 
-                0 0 20px var(--neon-purple-glow),
-                inset 0 0 15px var(--neon-purple-glow);
-        }
-
-        /* Neon Button Styling */
-        .neon-button {
-            font-family: 'Orbitron', sans-serif;
-            background: transparent;
-            color: #fff;
-            border: 2px solid var(--neon-purple-glow);
-            box-shadow: 
-                0 0 10px var(--neon-purple-glow),
-                inset 0 0 10px var(--neon-purple-glow);
-            text-shadow: 0 0 5px var(--neon-purple-glow);
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .neon-button:hover {
-            background: var(--neon-purple-glow);
-            color: #fff;
-            box-shadow: 
-                0 0 20px var(--neon-purple-glow),
-                0 0 40px var(--neon-purple-glow);
-            text-shadow: none;
-        }
-
-        /* Input field styling */
-        .neon-input {
-            background-color: #0a0a0a;
-            border: 1px solid var(--neon-purple-dark);
-            color: #fff;
-            transition: all 0.3s ease;
-        }
-        
-        .neon-input:focus {
-            outline: none;
-            border-color: var(--neon-purple-glow);
-            box-shadow: 0 0 15px rgba(184, 41, 255, 0.5);
-        }
-
-        /* Flickering animation for main text */
-        @keyframes flicker {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--neon-purple-glow), 0 0 40px var(--neon-purple-glow), 0 0 80px var(--neon-purple-glow); }
-            20%, 24%, 55% { text-shadow: none; }
-        }
-
-        /* Pulsing accent lines */
-        .pulse-line {
-            height: 2px;
-            background: var(--neon-purple-glow);
-            box-shadow: 0 0 15px var(--neon-purple-glow);
-            animation: pulse-width 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulse-width {
-            0% { width: 40%; opacity: 0.5; }
-            100% { width: 80%; opacity: 1; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vortal</title>
+<meta name="description" content="Vortal makes games, Discord bots, physical devices, and mods for Minecraft, Geometry Dash, and Windhawk.">
+<meta name="theme-color" content="#0A0711">
+<meta property="og:title" content="Vortal">
+<meta property="og:description" content="Games, mods, bots, and devices.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14' shape-rendering='crispEdges'%3E%3Crect width='12' height='14' fill='%232A1F44'/%3E%3Crect x='2' y='2' width='8' height='10' fill='%236A1FCB'/%3E%3Crect x='3' y='3' width='2' height='3' fill='%23E05BC4'/%3E%3Crect x='6' y='6' width='3' height='2' fill='%23A862FF'/%3E%3Crect x='4' y='9' width='2' height='1' fill='%237B9BFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="relative min-h-screen flex flex-col items-center justify-center p-4">
+<body>
+<a class="skip" href="#main">Skip to content</a>
 
-    <div class="bg-grid"></div>
-    
-    <!-- Subtle radial gradient to highlight center -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(106,0,168,0.15)_0%,rgba(0,0,0,0)_70%)] pointer-events-none"></div>
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="brand" href="#top" aria-label="Vortal, back to top">
+      <svg class="mark" viewBox="0 0 12 14" shape-rendering="crispEdges" aria-hidden="true">
+        <rect width="12" height="14" fill="#2A1F44"/>
+        <rect x="2" y="2" width="8" height="10" fill="#6A1FCB"/>
+        <rect x="3" y="3" width="2" height="3" fill="#E05BC4"/>
+        <rect x="6" y="6" width="3" height="2" fill="#A862FF"/>
+        <rect x="4" y="9" width="2" height="1" fill="#7B9BFF"/>
+        <rect x="7" y="3" width="1" height="1" fill="#D5B2FF"/>
+      </svg>
+      <span class="brand__word">Vortal</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav__links">
+        <li class="menu">
+          <button class="nav__link menu__btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-products">
+            Products
+            <svg class="caret" viewBox="0 0 5 3" shape-rendering="crispEdges" aria-hidden="true"><path d="M0 0h5v1H4v1H3v1H2V2H1V1H0z" fill="currentColor"/></svg>
+          </button>
+          <div class="menu__panel" id="menu-products" hidden></div>
+        </li>
+        <li class="nav__hide-sm"><a class="nav__link" href="#make">What we make</a></li>
+        <li class="nav__hide-sm"><a class="nav__link" href="#next">What's next</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-    <main class="relative z-10 flex flex-col items-center w-full max-w-4xl mx-auto text-center">
-        
-        <div class="mb-8">
-            <h1 class="neon-text text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-widest mb-4">
-                Coming Soon
-            </h1>
-            <div class="flex justify-center w-full mb-6">
-                <div class="pulse-line rounded-full"></div>
-            </div>
-            <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
-                We are building something extraordinary. Get ready to experience the future. 
-                <span class="neon-text-subtle font-semibold tracking-wide">Stay tuned.</span>
-            </p>
+<main id="main">
+
+  <section class="hero" id="top">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Vortal &middot; studio</p>
+        <h1 class="stack" aria-label="Games, mods, bots, and devices.">
+          <span class="stack__line" style="--dot: var(--orchid)" aria-hidden="true">
+            <span class="stack__word">Games<i>.</i></span>
+            <span class="stack__note">Monopoline &mdash; play it now</span>
+          </span>
+          <span class="stack__line" style="--dot: var(--violet)" aria-hidden="true">
+            <span class="stack__word">Mods<i>.</i></span>
+            <span class="stack__note">Minecraft &middot; Geometry&nbsp;Dash &middot; Windhawk</span>
+          </span>
+          <span class="stack__line" style="--dot: var(--iris)" aria-hidden="true">
+            <span class="stack__word">Bots<i>.</i></span>
+            <span class="stack__note">Discord &mdash; DonutDuck, coming soon</span>
+          </span>
+          <span class="stack__line" style="--dot: var(--periwinkle)" aria-hidden="true">
+            <span class="stack__word">Devices<i>.</i></span>
+            <span class="stack__note">Physical hardware &mdash; coming</span>
+          </span>
+        </h1>
+        <p class="lede">Vortal makes games, Discord bots, physical devices, and mods for Minecraft, Geometry Dash, and Windhawk. Everything we've shipped is below, with more on the way.</p>
+        <div class="cta-row">
+          <a class="btn btn--solid" href="#releases">See the releases</a>
+          <a class="btn btn--line" href="https://monopoline.onrender.com/" target="_blank" rel="noopener">Play Monopoline <span aria-hidden="true">&#8599;</span></a>
         </div>
+      </div>
 
-        <div class="flex flex-wrap justify-center gap-4 md:gap-8 my-12 w-full">
-            <!-- Days -->
-            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
-                <span id="days" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
-                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Days</span>
-            </div>
-            <!-- Hours -->
-            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
-                <span id="hours" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
-                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Hours</span>
-            </div>
-            <!-- Minutes -->
-            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
-                <span id="minutes" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
-                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Minutes</span>
-            </div>
-            <!-- Seconds -->
-            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
-                <span id="seconds" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
-                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Seconds</span>
-            </div>
-        </div>
+      <div class="portal">
+        <div class="portal__glow" aria-hidden="true"></div>
+        <canvas id="portal" width="128" height="144" role="img" aria-label="A pixel-art obsidian portal, lit purple and shimmering"></canvas>
+      </div>
+    </div>
+  </section>
 
-    </main>
+  <section class="releases" id="releases">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Released</h2>
+        <p class="section-head__meta" id="releases-meta"></p>
+      </header>
+      <div id="release-list"></div>
+    </div>
+  </section>
 
-    <script>
-        // Set launch date to September 15, 2026 at 7 PM PDT
-        const launchDate = new Date('2026-09-15T19:00:00-07:00');
+  <section class="soon" id="soon">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>Coming soon</h2>
+        <p class="section-head__meta" id="soon-meta"></p>
+      </header>
+      <ul class="soon__list" id="soon-list"></ul>
+    </div>
+  </section>
 
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = launchDate.getTime() - now;
+  <section class="make" id="make">
+    <div class="wrap">
+      <header class="section-head">
+        <h2>What we make</h2>
+        <p class="section-head__meta">Six benches, one studio</p>
+      </header>
+      <ul class="disciplines" id="disciplines"></ul>
+    </div>
+  </section>
 
-            if (distance < 0) {
-                document.getElementById("days").innerText = "00";
-                document.getElementById("hours").innerText = "00";
-                document.getElementById("minutes").innerText = "00";
-                document.getElementById("seconds").innerText = "00";
-                return;
-            }
+  <section class="next" id="next">
+    <div class="wrap next__inner">
+      <svg class="mark mark--lg" viewBox="0 0 12 14" shape-rendering="crispEdges" aria-hidden="true">
+        <rect width="12" height="14" fill="#2A1F44"/>
+        <rect x="2" y="2" width="8" height="10" fill="#6A1FCB"/>
+        <rect x="3" y="3" width="2" height="3" fill="#E05BC4"/>
+        <rect x="6" y="6" width="3" height="2" fill="#A862FF"/>
+        <rect x="4" y="9" width="2" height="1" fill="#7B9BFF"/>
+        <rect x="7" y="3" width="1" height="1" fill="#D5B2FF"/>
+      </svg>
+      <div>
+        <h2>More coming through.</h2>
+        <p id="next-copy">More releases are on the bench now. Check back here for new drops.</p>
+      </div>
+    </div>
+  </section>
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+</main>
 
-            // Add leading zeros
-            document.getElementById("days").innerText = days.toString().padStart(2, '0');
-            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-        }
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <span class="foot__brand"><span class="brand__word">Vortal</span> &copy; 2026</span>
+    <ul class="foot__links" id="foot-links"></ul>
+  </div>
+</footer>
 
-        // Update countdown every second
-        setInterval(updateCountdown, 1000);
-        updateCountdown(); // Initial call
-    </script>
+<script src="products.js"></script>
+<script src="store.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
