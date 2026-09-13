@@ -35,7 +35,8 @@
   };
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
+  // Full http(s) links, or files on this site like /files/guide.pdf (but not //other-site).
+  const safeUrl = u => (/^https?:\/\//i.test(u || '') || /^\/(?!\/)/.test(u || '') ? u : '');
   const shadeHex = k => (SHADES[k] || SHADES.violet).hex;
   const slug = name => String(name).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '')
     .trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-') || 'product';
@@ -56,6 +57,7 @@
       note: str(p.note),
       link: { label: str(link.label), url: str(link.url) },
       source: str(p.source),
+      guide: { label: str((p.guide || {}).label), url: str((p.guide || {}).url) },
       visual: VISUALS[p.visual] ? p.visual : 'icon',
     };
   }

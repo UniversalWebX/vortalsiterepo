@@ -45,11 +45,12 @@
   }
 
   function actionsHTML(p) {
-    const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source);
-    if (!url && !src) return '';
+    const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source), guide = V.safeUrl(p.guide.url);
+    if (!url && !src && !guide) return '';
     return `
       <div class="release__actions">
         ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
+        ${guide ? `<a class="btn ${url ? 'btn--line' : 'btn--solid'}" href="${esc(guide)}" target="_blank" rel="noopener">${esc(p.guide.label || 'Read the guide')} <span aria-hidden="true">&#8599;</span></a>` : ''}
         ${src ? `<a class="btn btn--line" href="${esc(src)}" target="_blank" rel="noopener">View source <span aria-hidden="true">&#8599;</span></a>` : ''}
       </div>`;
   }
