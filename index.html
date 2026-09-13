@@ -1,1 +1,223 @@
-<!doctype html><html lang="en"><head><title>Example Domain</title><link rel="icon" href="data:,"><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VORTAL COMING SOON</title>
+    
+    <!-- Import Google Fonts: Orbitron for neon text, Inter for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --neon-purple: #b92b27; /* Fallback */
+            --neon-purple-glow: #b829ff;
+            --neon-purple-dark: #6a00a8;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Background grid for subtle cyberpunk/neon aesthetic */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(184, 41, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(184, 41, 255, 0.05) 1px, transparent 1px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Neon Text Glow */
+        .neon-text {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px var(--neon-purple-glow),
+                0 0 40px var(--neon-purple-glow),
+                0 0 80px var(--neon-purple-glow),
+                0 0 90px var(--neon-purple-glow);
+            animation: flicker 4s infinite alternate;
+        }
+
+        /* Subtle text glow for smaller headers */
+        .neon-text-subtle {
+            font-family: 'Orbitron', sans-serif;
+            color: #e0b3ff;
+            text-shadow:
+                0 0 5px var(--neon-purple-glow),
+                0 0 10px var(--neon-purple-glow);
+        }
+
+        /* Neon Box Glow for timer and inputs */
+        .neon-box {
+            border: 2px solid var(--neon-purple-glow);
+            background-color: rgba(10, 0, 15, 0.8);
+            box-shadow: 
+                0 0 10px var(--neon-purple-glow),
+                inset 0 0 10px var(--neon-purple-glow);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .neon-box:hover {
+            box-shadow: 
+                0 0 20px var(--neon-purple-glow),
+                inset 0 0 15px var(--neon-purple-glow);
+        }
+
+        /* Neon Button Styling */
+        .neon-button {
+            font-family: 'Orbitron', sans-serif;
+            background: transparent;
+            color: #fff;
+            border: 2px solid var(--neon-purple-glow);
+            box-shadow: 
+                0 0 10px var(--neon-purple-glow),
+                inset 0 0 10px var(--neon-purple-glow);
+            text-shadow: 0 0 5px var(--neon-purple-glow);
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-button:hover {
+            background: var(--neon-purple-glow);
+            color: #fff;
+            box-shadow: 
+                0 0 20px var(--neon-purple-glow),
+                0 0 40px var(--neon-purple-glow);
+            text-shadow: none;
+        }
+
+        /* Input field styling */
+        .neon-input {
+            background-color: #0a0a0a;
+            border: 1px solid var(--neon-purple-dark);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .neon-input:focus {
+            outline: none;
+            border-color: var(--neon-purple-glow);
+            box-shadow: 0 0 15px rgba(184, 41, 255, 0.5);
+        }
+
+        /* Flickering animation for main text */
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--neon-purple-glow), 0 0 40px var(--neon-purple-glow), 0 0 80px var(--neon-purple-glow); }
+            20%, 24%, 55% { text-shadow: none; }
+        }
+
+        /* Pulsing accent lines */
+        .pulse-line {
+            height: 2px;
+            background: var(--neon-purple-glow);
+            box-shadow: 0 0 15px var(--neon-purple-glow);
+            animation: pulse-width 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-width {
+            0% { width: 40%; opacity: 0.5; }
+            100% { width: 80%; opacity: 1; }
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="bg-grid"></div>
+    
+    <!-- Subtle radial gradient to highlight center -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(106,0,168,0.15)_0%,rgba(0,0,0,0)_70%)] pointer-events-none"></div>
+
+    <main class="relative z-10 flex flex-col items-center w-full max-w-4xl mx-auto text-center">
+        
+        <div class="mb-8">
+            <h1 class="neon-text text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-widest mb-4">
+                Coming Soon
+            </h1>
+            <div class="flex justify-center w-full mb-6">
+                <div class="pulse-line rounded-full"></div>
+            </div>
+            <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                We are building something extraordinary. Get ready to experience the future. 
+                <span class="neon-text-subtle font-semibold tracking-wide">Stay tuned.</span>
+            </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4 md:gap-8 my-12 w-full">
+            <!-- Days -->
+            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
+                <span id="days" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
+                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Days</span>
+            </div>
+            <!-- Hours -->
+            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
+                <span id="hours" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
+                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Hours</span>
+            </div>
+            <!-- Minutes -->
+            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
+                <span id="minutes" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
+                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Minutes</span>
+            </div>
+            <!-- Seconds -->
+            <div class="neon-box flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 rounded-lg">
+                <span id="seconds" class="neon-text-subtle text-3xl md:text-5xl font-bold">00</span>
+                <span class="text-xs md:text-sm text-gray-400 mt-2 uppercase tracking-widest font-semibold">Seconds</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Set launch date to September 15, 2026 at 7 PM PDT
+        const launchDate = new Date('2026-09-15T19:00:00-07:00');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = launchDate.getTime() - now;
+
+            if (distance < 0) {
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Add leading zeros
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+        }
+
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+    </script>
+</body>
+</html>
