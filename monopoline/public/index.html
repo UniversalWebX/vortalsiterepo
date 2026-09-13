@@ -9,6 +9,9 @@
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon.svg">
 <title>Monopoline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* The Vortal look is the default: obsidian and portal violet, dark unless the
    player picks Light (data-theme="light") or Follow device (data-theme="system"). */
@@ -474,6 +477,91 @@ html.blacked,html.blacked body{overflow:hidden!important}
 .colorpick{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
 .colorpick button{aspect-ratio:1;border-radius:50%;border:2px solid transparent;min-height:0}
 .colorpick button[aria-pressed="true"]{border-color:var(--text);box-shadow:0 0 0 2px var(--panel) inset}
+
+/* ══════════ Vortal skin ══════════════════════════════════════════
+   The Vortal look layered over everything above: Vortal's typefaces,
+   squarer corners, a portal-lit ground and livelier motion. Colours still
+   come from the palette tokens, so every palette keeps working; Persian keeps
+   its own fonts; Lightweight mode still strips all motion. Delete this block
+   to go back to the original look. */
+:root{--r1:3px;--r2:4px;--r3:6px;--pill:4px;
+  --display:"Chakra Petch",Bahnschrift,"DIN Alternate","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace}
+html:not(.fa) body{font-family:var(--body)}
+html:not(.fa) .disp,html:not(.fa) .btn,html:not(.fa) .card>.hd h3,html:not(.fa) .sheet>.hd h2,
+html:not(.fa) #chatPop .hd h3,html:not(.fa) .handoff .who,html:not(.fa) .jobtile h4,html:not(.fa) .deedcard .band h4{font-family:var(--display)}
+.mono,.num,input[type=number],.code-input,.codeplate,.fxchip,table.rt td:last-child,.chip,.readout .cash .v{font-family:var(--mono)}
+
+/* the ground: Vortal's dot grid outside the app, a portal glow at its top */
+body{background:radial-gradient(color-mix(in srgb,var(--accent) 13%,transparent) 1.2px,transparent 1.7px) 0 0/26px 26px,var(--bg)}
+#app{background:radial-gradient(ellipse 90% 280px at 50% 0,color-mix(in srgb,var(--accent) 11%,transparent),transparent),var(--bg)}
+
+/* header */
+header{background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom-color:transparent}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;opacity:.7;
+  background:linear-gradient(90deg,var(--line),var(--teal) 30%,var(--accent) 55%,var(--line))}
+.brand{font-weight:700;letter-spacing:.2em;min-width:0;white-space:nowrap}
+/* Chakra Petch runs wider than the old face: on phones the header row must be
+   allowed to shrink (chips shorten with "…") rather than push the buttons off-screen. */
+.brandrow{min-width:0}
+.brandrow .chip{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.brandrow .iconbtn{flex:none}
+@media(max-width:480px){
+  .brand{font-size:16px;letter-spacing:.1em}
+  .brandrow{gap:6px;padding-inline:10px}
+  .brandrow .chip{font-size:10px;padding:3px 7px;letter-spacing:.04em}
+}
+.brand b{background:linear-gradient(90deg,var(--accent),var(--teal),var(--accent));background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:vbrand 7s linear infinite}
+@keyframes vbrand{to{background-position:-200% 0}}
+.iconbtn{border-radius:var(--r2);transition:border-color .15s,color .15s,transform .15s}
+.iconbtn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.readout.you{box-shadow:inset 3px 0 0 var(--accent),inset 60px 0 60px -60px color-mix(in srgb,var(--accent) 40%,transparent)}
+.readout .cash .v{letter-spacing:-.02em}
+
+/* cards and sheets: an accent-lit header, a soft glow underneath */
+.card{box-shadow:0 22px 44px -34px color-mix(in srgb,var(--accent) 70%,transparent);transition:border-color .2s,box-shadow .2s}
+.card>.hd{background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%)}
+.card>.hd h3{color:var(--text);letter-spacing:.14em}
+.card>.hd h3::before{content:"";display:inline-block;width:6px;height:6px;margin-inline-end:8px;background:var(--accent);vertical-align:.12em}
+.sheet{border-color:color-mix(in srgb,var(--accent) 35%,var(--line2));
+  box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 70px -30px var(--accent)}
+.sheet>.hd{background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%)}
+
+/* buttons: square, lit, and they lift */
+.btn{letter-spacing:.08em;transition:background .12s,border-color .12s,transform .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -16px var(--accent)}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.btn.pri{box-shadow:inset 0 -3px 0 rgba(0,0,0,.24),0 12px 26px -16px var(--accent)}
+.btn.pri:hover{box-shadow:inset 0 -3px 0 rgba(0,0,0,.24),0 16px 30px -14px var(--accent)}
+.seg button{transition:background .15s,color .15s}
+.jobtile,.skintile,.tokenpick button{transition:border-color .15s,transform .15s,background .15s}
+.jobtile:hover,.skintile:hover,.tokenpick button:hover{transform:translateY(-2px)}
+
+/* tabs: the current one glows from the top edge */
+nav.tabs{box-shadow:0 -1px 0 var(--line)}
+nav.tabs button{transition:color .15s,background .2s}
+nav.tabs button[aria-current="true"]{background:linear-gradient(to bottom,color-mix(in srgb,var(--accent) 18%,transparent),transparent)}
+nav.tabs button[aria-current="true"] svg{filter:drop-shadow(0 0 6px var(--accent));animation:vtab .3s cubic-bezier(.3,1.6,.5,1)}
+@keyframes vtab{0%{transform:scale(.8)}100%{transform:none}}
+
+/* dice, board and the rest */
+.dicewrap svg{filter:drop-shadow(0 10px 18px color-mix(in srgb,var(--accent) 35%,transparent))}
+.rolling{animation:vroll .65s cubic-bezier(.3,1.35,.5,1)}
+@keyframes vroll{0%{transform:translateY(0) rotate(0) scale(1)}25%{transform:translateY(-18px) rotate(-28deg) scale(1.08)}
+  55%{transform:translateY(2px) rotate(14deg) scale(.96)}75%{transform:translateY(-4px) rotate(-5deg)}100%{transform:none}}
+.boardwrap{box-shadow:inset 0 0 50px -16px color-mix(in srgb,var(--accent) 30%,transparent)}
+.codeplate{text-shadow:0 0 18px color-mix(in srgb,var(--accent) 55%,transparent)}
+.toast{border-radius:var(--r2);border:1px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+.here-tag{box-shadow:0 0 12px -2px var(--accent)}
+.space{transition:background .2s}
+
+@media(prefers-reduced-motion:reduce){
+  .brand b,nav.tabs button[aria-current="true"] svg,.rolling{animation:none}
+  .btn,.iconbtn,.jobtile,.skintile,.tokenpick button,.card{transition:none}
+  .btn:hover,.iconbtn:hover,.jobtile:hover,.skintile:hover,.tokenpick button:hover{transform:none}
+}
 </style>
 
 <div id="app">

@@ -2,7 +2,7 @@
    Network-first for the app shell so a deploy is picked up immediately;
    cache is the fallback when the table has no signal.
    Realtime endpoints are never cached. */
-const CACHE = 'monopoline-v21';
+const CACHE = 'monopoline-v22';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './baghali.png', './showcase/index.html'];
 
 self.addEventListener('install', e => {
