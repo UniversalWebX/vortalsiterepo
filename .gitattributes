@@ -1,0 +1,8 @@
+# Never convert line endings in binary files (this PC has core.autocrlf=true).
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
