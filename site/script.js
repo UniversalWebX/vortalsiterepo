@@ -99,6 +99,28 @@
     if (p.visual === 'claims') {
       return '<canvas class="claims" width="160" height="96" role="img" aria-label="Illustration of a chunk map with three faction territories, open wilderness, and a contested border under siege"></canvas>';
     }
+    if (p.visual === 'giveaway') {
+      // A Discord giveaway message, drawn in DonutDuck's own blue / pink / yellow.
+      return `
+        <div class="gw" role="img" aria-label="Illustration of a ${esc(p.name)} giveaway message in Discord: a five million prize in Double or Keep mode, with an Enter button showing 48 entries">
+          <div class="gw__msg">
+            <span class="gw__avatar"></span>
+            <div class="gw__main">
+              <div class="gw__who"><b>${esc(p.name)}</b><span class="gw__bot">BOT</span><span class="gw__time">Today at 18:04</span></div>
+              <div class="gw__embed">
+                <p class="gw__kicker">Giveaway &middot; #0007</p>
+                <p class="gw__prize">$5m in-game money</p>
+                <div class="gw__facts">
+                  <span><i>Ends</i> in 2h 14m</span>
+                  <span><i>Winners</i> 1</span>
+                  <span><i>Mode</i> Double or Keep</span>
+                </div>
+              </div>
+              <div class="gw__buttons"><span class="gw__btn gw__btn--enter">Enter &middot; 48</span><span class="gw__btn">Rules</span></div>
+            </div>
+          </div>
+        </div>`;
+    }
     if (p.visual === 'board') {
       return `
         <div class="board" role="img" aria-label="A 40-space property board loop with a player token on Illinois Avenue">
@@ -121,6 +143,7 @@
           <li><i class="sw sw--siege"></i>Under siege</li>
         </ul><span>1 cell = 1 chunk = 16 &times; 16 blocks</span>`],
       board: ['The Line &middot; 40 spaces', '<span>&ldquo;Advance to Illinois Avenue. If you pass GO, collect $200.&rdquo;</span>'],
+      giveaway: ['Giveaway message', '<span>Double or Keep: keep the prize, or win again for twice as much</span>'],
     }[p.visual] || [esc(cat(p).group), `<span>${esc(p.name)}</span>`];
     return `
       <figure class="viz">

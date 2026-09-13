@@ -14,7 +14,7 @@
     note      Extra line (optional). Wrap a key in backticks for a keycap: `K`
     link      { "label": "...", "url": "https://..." }. Leave url empty for no button.
     source    Link to the code, e.g. a GitHub repo (optional). Adds a "View source" button.
-    visual    icon | claims | board | dots
+    visual    icon | claims | board | dots | giveaway
 */
 window.VORTAL_PRODUCTS = [
   {
@@ -85,12 +85,19 @@ window.VORTAL_PRODUCTS = [
     "category": "discord",
     "status": "soon",
     "shade": "rose",
-    "spec": "",
-    "summary": "A Discord bot from Vortal. Full details at launch.",
-    "features": [],
-    "note": "",
+    "spec": "Discord bot · 157 commands · web dashboard",
+    "summary": "An all-in-one Discord bot for DonutSMP communities: giveaways, tickets, staff checks, vouches, applications, and live player stats. It's one bot because they connect — a giveaway winner claims through a ticket, and whoever handles it earns a vouch.",
+    "features": [
+      { "label": "Giveaways", "text": "Winners claim through their own ticket, rerolls never repeat a winner, and two game modes: Split or Steal, and Double or Keep." },
+      { "label": "Tickets", "text": "As many panels as you like, custom ticket types and forms, transcripts, and a reason on every ticket." },
+      { "label": "Staff", "text": "One staff list for everything, activity checks that strike no-shows automatically, and legit votes." },
+      { "label": "Player stats", "text": "DonutSMP balances, leaderboards, and auction prices, plus trackers that report changes every 12 hours." },
+      { "label": "Applications", "text": "Forms of up to 25 questions, reviewed with Accept and Deny buttons that message the applicant." },
+      { "label": "Custom commands", "text": "STScript, a Scratch-like language for your own commands, sandboxed so a script can't do more than its author." }
+    ],
+    "note": "Also: vouches, Twitch live alerts, partnerships, role menus, a starboard, and a web dashboard with Discord login. /docs lists every command straight from the bot, so the list never goes out of date. It reads DonutSMP data but can't run in-game commands; the server's data is read-only to every bot.",
     "link": { "label": "", "url": "" },
-    "visual": "icon"
+    "visual": "giveaway"
   },
   {
     "id": "windhawk",

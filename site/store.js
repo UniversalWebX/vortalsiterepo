@@ -23,7 +23,7 @@
   };
 
   const STATUSES = { released: 'Out now', soon: 'Coming soon', hidden: 'Hidden' };
-  const VISUALS = { icon: 'Category icon', claims: 'Claims map', board: 'Board loop', dots: 'Dots board' };
+  const VISUALS = { icon: 'Category icon', claims: 'Claims map', board: 'Board loop', dots: 'Dots board', giveaway: 'Giveaway message' };
 
   const ICONS = {
     dice:   ['#########', '#.......#', '#.#...#.#', '#.......#', '#...#...#', '#.......#', '#.#...#.#', '#.......#', '#########'],

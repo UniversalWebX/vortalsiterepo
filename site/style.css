@@ -387,6 +387,29 @@ html[data-route="page"] #home { display: none; }
 }
 .board__sub { color: var(--accent); }
 
+/* DonutDuck's giveaway message: Discord's own greys, the bot's blue / pink / yellow.
+   Sizes follow the width it's given, so it fits a card and a product page alike. */
+.gw { width: 100%; container-type: inline-size; background: #313338; }
+.gw__msg { display: grid; grid-template-columns: 10cqi minmax(0, 1fr); gap: 3cqi; padding: 4cqi; font-family: var(--body); }
+.gw__avatar {
+  width: 10cqi; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, #313338 0 21%, #FF4FA3 22% 60%, #F2B76B 61%);
+}
+.gw__main { display: grid; gap: 1.8cqi; min-width: 0; }
+.gw__who { display: flex; align-items: center; gap: 1.8cqi; font-size: 3.8cqi; line-height: 1.2; color: #F2F3F5; }
+.gw__who b { color: #FF8FC4; }
+.gw__bot { padding: .5cqi 1.1cqi; border-radius: .8cqi; background: #5865F2; color: #FFFFFF; font: 700 2.4cqi/1.2 var(--body); }
+.gw__time { font-size: 2.9cqi; color: #949BA4; }
+.gw__embed { display: grid; gap: 1.4cqi; padding: 2.8cqi 3.2cqi; background: #2B2D31; border-left: 1cqi solid #3B82F6; border-radius: 1cqi; }
+.gw__kicker { margin: 0; font: 700 2.8cqi/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; color: #FFCE3B; }
+.gw__prize { margin: 0; font: 700 5.2cqi/1.15 var(--body); color: #F2F3F5; }
+.gw__facts { display: flex; flex-wrap: wrap; gap: 1cqi 4cqi; font-size: 3.2cqi; line-height: 1.3; color: #DBDEE1; }
+.gw__facts i { display: block; font-style: normal; font-weight: 600; font-size: 2.6cqi; color: #949BA4; }
+.gw__buttons { display: flex; gap: 1.8cqi; }
+.gw__btn { padding: 1.5cqi 3.2cqi; border-radius: 1cqi; background: #4E5058; color: #FFFFFF; font: 600 3.3cqi/1 var(--body); }
+.gw__btn--enter { background: #FF4FA3; }
+.pcard__media .gw { width: 100%; }
+
 /* ---------- Product pages ---------- */
 .product { --accent: var(--portal); }
 .product-hero {
