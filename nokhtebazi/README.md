@@ -46,6 +46,10 @@ npx wrangler deploy   # live at nokhtebazi.vortal.space
 The first deploy creates the Worker, the Room Durable Object, and the `nokhtebazi.vortal.space` custom
 domain with its DNS record and certificate. Everything fits the Workers free plan.
 
+After that, pushing to `main` deploys it: the Worker is connected to this repo through Cloudflare Workers
+Builds (root directory `nokhtebazi`, build watch path `nokhtebazi/*`), so only changes in this folder
+trigger a build.
+
 ### API
 
 | Method | Path | Purpose |
