@@ -3,7 +3,7 @@
   sections are all built from this list. Edit it, save, and re-deploy.
 
   Fields:
-    id        Short name used in links, e.g. "donutduck" (lowercase, no spaces)
+    id        The page address: "donutduck" becomes vortal.space/donutduck (lowercase, no spaces)
     name      Display name
     category  games | minecraft | gd | windhawk | discord | devices
     status    released | soon | hidden
@@ -18,7 +18,7 @@
 */
 window.VORTAL_PRODUCTS = [
   {
-    "id": "cis-factions",
+    "id": "cisfactions",
     "name": "CIS Factions",
     "category": "minecraft",
     "status": "released",
@@ -93,7 +93,7 @@ window.VORTAL_PRODUCTS = [
     "visual": "icon"
   },
   {
-    "id": "windhawk-mod",
+    "id": "windhawk",
     "name": "Windhawk mod",
     "category": "windhawk",
     "status": "soon",

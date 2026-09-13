@@ -16,16 +16,26 @@
   const put = (d, i, c, a = 255) => { d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = a; };
   const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
-  /* ---------- Products ---------- */
+  /* ---------- Products and pages ----------
+     vortal.space/ is the home page and vortal.space/<id> is that product's page.
+     Every address serves this same index.html; this decides what to show. */
   const products = V.products();
-  const live = products.filter(p => p.status === 'released');
-  const soon = products.filter(p => p.status === 'soon');
+  const listed = products.filter(p => p.status !== 'hidden');
+  const live = listed.filter(p => p.status === 'released');
+  const soon = listed.filter(p => p.status === 'soon');
   const cat = p => V.CATEGORIES[p.category];
+  const href = p => `/${encodeURIComponent(p.id)}`;
   const names = list => list.length < 3
     ? list.map(p => p.name).join(' and ')
     : `${list.slice(0, -1).map(p => p.name).join(', ')}, and ${list[list.length - 1].name}`;
 
+  let route = '';
+  try { route = decodeURIComponent(location.pathname); } catch { route = location.pathname; }
+  route = route.replace(/^\/index\.html$/i, '/').replace(/\/+$/, '').slice(1).toLowerCase();
+  const current = route ? listed.find(p => p.id.toLowerCase() === route) : null;
+
   const richText = s => esc(s).replace(/`([^`]{1,24})`/g, '<kbd>$1</kbd>');
+  const statusPill = p => `<span class="pill pill--${p.status}">${esc(V.STATUSES[p.status])}</span>`;
 
   function featureHTML(f) {
     const body = f.text.includes('→')
@@ -34,7 +44,19 @@
     return `<div><dt>${esc(f.label)}</dt><dd>${body}</dd></div>`;
   }
 
+  function actionsHTML(p) {
+    const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source);
+    if (!url && !src) return '';
+    return `
+      <div class="release__actions">
+        ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
+        ${src ? `<a class="btn btn--line" href="${esc(src)}" target="_blank" rel="noopener">View source <span aria-hidden="true">&#8599;</span></a>` : ''}
+      </div>`;
+  }
+
+  /* ---------- Product art ---------- */
   // Dots and Boxes illustration: a seeded game in progress, two players' lines and claimed boxes.
+  let glowCount = 0;
   function dotsSVG(p) {
     const COLS = 8, ROWS = 5, S = 40, PAD = 20;
     const players = [V.shadeHex(p.shade), V.shadeHex('orchid')];
@@ -43,7 +65,7 @@
     const hor = Array.from({ length: (ROWS + 1) * COLS }, pick);
     const ver = Array.from({ length: ROWS * (COLS + 1) }, pick);
     const H = (x, y) => hor[y * COLS + x], Vt = (x, y) => ver[y * (COLS + 1) + x];
-    const glow = `glow-${esc(p.id)}`;
+    const glow = `dots-glow-${++glowCount}`;
     let out = `<defs><filter id="${glow}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
 
     for (let y = 0; y < ROWS; y++) {
@@ -69,127 +91,178 @@
     return out;
   }
 
-  function visualHTML(p) {
+  // The picture itself: used bare on cards and framed on product pages.
+  function visualArt(p) {
     if (p.visual === 'dots') {
-      return `
-        <figure class="viz">
-          <div class="viz__head"><span>Dots &amp; boxes</span><span>Illustration</span></div>
-          <svg class="dots" viewBox="0 0 360 240" role="img" aria-label="Illustration of a Dots and Boxes game in progress, with two players' lines, claimed boxes, and another player's cursor">${dotsSVG(p)}</svg>
-          <figcaption class="viz__foot"><span>Boards from 5 &times; 5 to 25 &times; 25</span><span>Close a box, go again</span></figcaption>
-        </figure>`;
+      return `<svg class="dots" viewBox="0 0 360 240" role="img" aria-label="Illustration of a Dots and Boxes game in progress, with two players' lines, claimed boxes, and another player's cursor">${dotsSVG(p)}</svg>`;
     }
     if (p.visual === 'claims') {
-      return `
-        <figure class="viz">
-          <div class="viz__head"><span>Claims map</span><span>Illustration</span></div>
-          <canvas class="claims" width="160" height="96" role="img" aria-label="Illustration of a chunk map with three faction territories, open wilderness, and a contested border under siege"></canvas>
-          <figcaption class="viz__foot">
-            <ul class="legend">
-              <li><i class="sw sw--claim"></i>Faction claims</li>
-              <li><i class="sw sw--wild"></i>Wilderness</li>
-              <li><i class="sw sw--siege"></i>Under siege</li>
-            </ul>
-            <span>1 cell = 1 chunk = 16 &times; 16 blocks</span>
-          </figcaption>
-        </figure>`;
+      return '<canvas class="claims" width="160" height="96" role="img" aria-label="Illustration of a chunk map with three faction territories, open wilderness, and a contested border under siege"></canvas>';
     }
     if (p.visual === 'board') {
       return `
-        <figure class="viz">
-          <div class="viz__head"><span>The Line &middot; 40 spaces</span><span>Illustration</span></div>
-          <div class="board" role="img" aria-label="A 40-space property board loop with a player token on Illinois Avenue">
-            <div class="board__center">
-              <span class="board__kicker">You bring the board.</span>
-              <strong class="board__title">${esc(p.name)} runs the rest.</strong>
-              <span class="board__sub">Bank &middot; Deeds &middot; Rent &middot; Cards &middot; Jail</span>
-            </div>
+        <div class="board" role="img" aria-label="A 40-space property board loop with a player token on Illinois Avenue">
+          <div class="board__center">
+            <span class="board__kicker">You bring the board.</span>
+            <strong class="board__title">${esc(p.name)} runs the rest.</strong>
+            <span class="board__sub">Bank &middot; Deeds &middot; Rent &middot; Cards &middot; Jail</span>
           </div>
-          <figcaption class="viz__foot"><span>&ldquo;Advance to Illinois Avenue. If you pass GO, collect $200.&rdquo;</span></figcaption>
-        </figure>`;
+        </div>`;
     }
+    return `<div class="viz__stage"><span class="px px--xl" data-icon="${cat(p).icon}"></span></div>`;
+  }
+
+  function visualHTML(p) {
+    const frame = {
+      dots: ['Dots &amp; boxes', '<span>Boards from 5 &times; 5 to 25 &times; 25</span><span>Close a box, go again</span>'],
+      claims: ['Claims map', `<ul class="legend">
+          <li><i class="sw sw--claim"></i>Faction claims</li>
+          <li><i class="sw sw--wild"></i>Wilderness</li>
+          <li><i class="sw sw--siege"></i>Under siege</li>
+        </ul><span>1 cell = 1 chunk = 16 &times; 16 blocks</span>`],
+      board: ['The Line &middot; 40 spaces', '<span>&ldquo;Advance to Illinois Avenue. If you pass GO, collect $200.&rdquo;</span>'],
+    }[p.visual] || [esc(cat(p).group), `<span>${esc(p.name)}</span>`];
     return `
       <figure class="viz">
-        <div class="viz__head"><span>${esc(cat(p).group)}</span><span>${esc(V.STATUSES[p.status])}</span></div>
-        <div class="viz__stage"><span class="px px--xl" data-icon="${cat(p).icon}"></span></div>
-        <figcaption class="viz__foot"><span>${esc(p.name)}</span></figcaption>
+        <div class="viz__head"><span>${frame[0]}</span><span>${p.visual === 'icon' ? esc(V.STATUSES[p.status]) : 'Illustration'}</span></div>
+        ${visualArt(p)}
+        <figcaption class="viz__foot">${frame[1]}</figcaption>
       </figure>`;
   }
 
-  function releaseHTML(p, i) {
-    const feats = p.features.filter(f => f.label || f.text);
-    const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source);
+  /* ---------- Building blocks ---------- */
+  function cardHTML(p) {
     return `
-      <article class="release${i % 2 ? ' release--flip' : ''}" id="${esc(p.id)}" style="--accent:${V.shadeHex(p.shade)}">
-        <div class="release__copy">
-          <div class="release__tags">
-            <span class="tag">${esc(cat(p).label)}</span>
-            ${p.spec ? `<span class="spec">${esc(p.spec)}</span>` : ''}
-          </div>
-          <h3 class="release__name">${esc(p.name)}</h3>
-          ${p.summary ? `<p class="release__lede">${esc(p.summary)}</p>` : ''}
-          ${feats.length ? `<dl class="features">${feats.map(featureHTML).join('')}</dl>` : ''}
-          ${p.note ? `<p class="release__note">${richText(p.note)}</p>` : ''}
-          ${url || src ? `
-          <div class="release__actions">
-            ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
-            ${src ? `<a class="btn btn--line" href="${esc(src)}" target="_blank" rel="noopener">View source <span aria-hidden="true">&#8599;</span></a>` : ''}
-          </div>` : ''}
+      <a class="pcard" href="${href(p)}" style="--accent:${V.shadeHex(p.shade)}">
+        <div class="pcard__media">${visualArt(p)}</div>
+        <div class="pcard__body">
+          <div class="release__tags"><span class="tag">${esc(cat(p).label)}</span>${statusPill(p)}</div>
+          <h3 class="pcard__name">${esc(p.name)}</h3>
+          ${p.summary ? `<p class="pcard__text">${esc(p.summary)}</p>` : ''}
+          <span class="pcard__more">Details <span aria-hidden="true">&rarr;</span></span>
         </div>
-        ${visualHTML(p)}
-      </article>`;
+      </a>`;
   }
 
   function soonHTML(p) {
     return `
-      <li class="soon__item" id="${esc(p.id)}" style="--accent:${V.shadeHex(p.shade)}">
-        <span class="px soon__icon" data-icon="${cat(p).icon}"></span>
-        <div class="soon__head">
-          <h3 class="soon__name">${esc(p.name)}</h3>
-          <span class="soon__cat">${esc(cat(p).label)}</span>
-        </div>
-        <p class="soon__text">${esc(p.summary)}</p>
-        <span class="pill pill--soon">Coming soon</span>
+      <li>
+        <a class="soon__item" href="${href(p)}" style="--accent:${V.shadeHex(p.shade)}">
+          <span class="px soon__icon" data-icon="${cat(p).icon}"></span>
+          <span class="soon__head">
+            <span class="soon__name">${esc(p.name)}</span>
+            <span class="soon__cat">${esc(cat(p).label)}</span>
+          </span>
+          <span class="soon__text">${esc(p.summary)}</span>
+          <span class="pill pill--soon">Coming soon</span>
+        </a>
       </li>`;
   }
 
-  document.getElementById('release-list').innerHTML = live.length
-    ? live.map(releaseHTML).join('')
-    : '<p class="empty">Nothing released yet. Check back soon.</p>';
-  document.getElementById('releases-meta').textContent = `${live.length} out now · ${soon.length} coming soon`;
-
-  const soonSection = document.getElementById('soon');
-  if (soon.length) {
-    document.getElementById('soon-list').innerHTML = soon.map(soonHTML).join('');
-    document.getElementById('soon-meta').textContent = `${soon.length} in the works`;
-  } else {
-    soonSection.hidden = true;
-  }
-
-  // What we make: one entry per category, with what's out and what's next.
-  const link = p => `<a href="#${esc(p.id)}">${esc(p.name)}</a>`;
-  document.getElementById('disciplines').innerHTML = Object.entries(V.CATEGORIES).map(([key, c]) => {
-    const out = live.filter(p => p.category === key);
-    const next = soon.filter(p => p.category === key);
-    let status = '';
-    if (out.length) status += `<p class="disc__status is-live">Out now: ${out.map(link).join(', ')}</p>`;
-    if (next.length) status += `<p class="disc__status is-soon">Up next: ${next.map(link).join(', ')}</p>`;
-    if (!status) status = '<p class="disc__status">Coming soon</p>';
+  function productPageHTML(p) {
+    const feats = p.features.filter(f => f.label || f.text);
+    const section = p.status === 'soon' ? ['soon', 'Coming soon'] : ['releases', 'Released'];
+    const others = [...live, ...soon].filter(o => o !== p).slice(0, 3);
+    const body = feats.length || p.note
+      ? `
+        <section class="wrap product-body">
+          <header class="section-head section-head--tight"><h2>What it does</h2></header>
+          ${feats.length ? `<dl class="features features--page">${feats.map(featureHTML).join('')}</dl>` : ''}
+          ${p.note ? `<p class="callout">${richText(p.note)}</p>` : ''}
+        </section>`
+      : `
+        <section class="wrap product-body">
+          <p class="product__soon">Part of Vortal's <a href="/#make">${esc(cat(p).group)}</a>: ${esc(cat(p).blurb)}</p>
+        </section>`;
     return `
-      <li class="disc" style="--accent:${V.shadeHex(c.shade)}">
-        <span class="px" data-icon="${c.icon}"></span>
-        <h3 class="disc__name">${esc(c.group)}</h3>
-        <p class="disc__text">${esc(c.blurb)}</p>
-        <div class="disc__foot">${status}</div>
-      </li>`;
-  }).join('');
-
-  if (soon.length) {
-    document.getElementById('next-copy').textContent =
-      `Up next: ${names(soon)}. Geometry Dash mods and our first physical devices are on the bench too. Check back here for new drops.`;
+      <article class="product" style="--accent:${V.shadeHex(p.shade)}">
+        <section class="product-hero">
+          <div class="wrap product-hero__grid">
+            <div class="product-hero__copy">
+              <nav class="crumbs" aria-label="Breadcrumb">
+                <a href="/">Vortal</a><span aria-hidden="true">/</span>
+                <a href="/#${section[0]}">${section[1]}</a><span aria-hidden="true">/</span>
+                <span aria-current="page">${esc(p.name)}</span>
+              </nav>
+              <div class="release__tags">
+                <span class="tag">${esc(cat(p).label)}</span>${statusPill(p)}
+                ${p.spec ? `<span class="spec">${esc(p.spec)}</span>` : ''}
+              </div>
+              <h1 class="product__name">${esc(p.name)}</h1>
+              ${p.summary ? `<p class="product__lede">${esc(p.summary)}</p>` : ''}
+              ${actionsHTML(p)}
+            </div>
+            ${visualHTML(p)}
+          </div>
+        </section>
+        ${body}
+        ${others.length ? `
+        <section class="wrap more">
+          <header class="section-head">
+            <h2>More from Vortal</h2>
+            <p class="section-head__meta"><a href="/#releases">Everything we make</a></p>
+          </header>
+          <div class="pgrid">${others.map(cardHTML).join('')}</div>
+        </section>` : ''}
+      </article>`;
   }
 
-  document.getElementById('foot-links').insertAdjacentHTML('afterbegin',
-    live.map(p => `<li><a href="#${esc(p.id)}">${esc(p.name)}</a></li>`).join(''));
+  function missingHTML() {
+    return `
+      <section class="wrap missing">
+        <p class="eyebrow">Page not found</p>
+        <h1>Nothing through this portal.</h1>
+        <p>There's no page at <code>/${esc(route)}</code>. It may have moved, or it isn't out yet.</p>
+        <a class="btn btn--solid" href="/">Back to Vortal</a>
+      </section>`;
+  }
+
+  /* ---------- Render the page for this address ---------- */
+  if (route) {
+    document.documentElement.dataset.route = 'page';
+    document.getElementById('page').innerHTML = current ? productPageHTML(current) : missingHTML();
+    document.title = current ? `${current.name} · Vortal` : 'Page not found · Vortal';
+    const desc = document.querySelector('meta[name="description"]');
+    if (current && current.summary && desc) desc.setAttribute('content', current.summary);
+  } else {
+    document.getElementById('release-list').innerHTML = live.length
+      ? live.map(cardHTML).join('')
+      : '<p class="empty">Nothing released yet. Check back soon.</p>';
+    document.getElementById('releases-meta').textContent = `${live.length} out now · ${soon.length} coming soon`;
+
+    if (soon.length) {
+      document.getElementById('soon-list').innerHTML = soon.map(soonHTML).join('');
+      document.getElementById('soon-meta').textContent = `${soon.length} in the works`;
+    } else {
+      document.getElementById('soon').hidden = true;
+    }
+
+    // What we make: one entry per category, with what's out and what's next.
+    const link = p => `<a href="${href(p)}">${esc(p.name)}</a>`;
+    document.getElementById('disciplines').innerHTML = Object.entries(V.CATEGORIES).map(([key, c]) => {
+      const out = live.filter(p => p.category === key);
+      const next = soon.filter(p => p.category === key);
+      let status = '';
+      if (out.length) status += `<p class="disc__status is-live">Out now: ${out.map(link).join(', ')}</p>`;
+      if (next.length) status += `<p class="disc__status is-soon">Up next: ${next.map(link).join(', ')}</p>`;
+      if (!status) status = '<p class="disc__status">Coming soon</p>';
+      return `
+        <li class="disc" style="--accent:${V.shadeHex(c.shade)}">
+          <span class="px" data-icon="${c.icon}"></span>
+          <h3 class="disc__name">${esc(c.group)}</h3>
+          <p class="disc__text">${esc(c.blurb)}</p>
+          <div class="disc__foot">${status}</div>
+        </li>`;
+    }).join('');
+
+    if (soon.length) {
+      document.getElementById('next-copy').textContent =
+        `Up next: ${names(soon)}. Geometry Dash mods and our first physical devices are on the bench too. Check back here for new drops.`;
+    }
+  }
+
+  document.getElementById('foot-links').innerHTML =
+    listed.map(p => `<li><a href="${href(p)}"${p === current ? ' aria-current="page"' : ''}>${esc(p.name)}</a></li>`).join('');
 
   /* ---------- Products dropdown ---------- */
   const menuBtn = document.getElementById('menu-btn');
@@ -198,7 +271,7 @@
     <div class="menu__group">
       <p class="menu__label">${title}</p>
       ${list.map(p => `
-        <a class="menu__item" href="#${esc(p.id)}" style="--accent:${V.shadeHex(p.shade)}">
+        <a class="menu__item" href="${href(p)}" style="--accent:${V.shadeHex(p.shade)}"${p === current ? ' aria-current="page"' : ''}>
           <span class="px menu__icon" data-icon="${cat(p).icon}"></span>
           <span class="menu__text">
             <span class="menu__name">${esc(p.name)}</span>
@@ -211,7 +284,6 @@
 
   const setMenu = open => { menu.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open)); };
   menuBtn.addEventListener('click', () => setMenu(menu.hidden));
-  menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
   document.addEventListener('click', e => { if (!menu.hidden && !e.target.closest('.menu')) setMenu(false); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && !menu.hidden) { setMenu(false); menuBtn.focus(); }
@@ -229,9 +301,9 @@
 
   V.paintIcons();
 
-  /* ---------- Hero portal ---------- */
+  /* ---------- Hero portal (home only) ---------- */
   const portal = document.getElementById('portal');
-  if (portal) {
+  if (portal && !route) {
     const ctx = portal.getContext('2d');
     const W = 128, H = 144, B = 16;             // 16px textures, like the game
     const FX = 16, FY = 16, FW = 6 * B, FH = 7 * B;

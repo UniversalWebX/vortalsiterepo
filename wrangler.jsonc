@@ -1,0 +1,18 @@
+// vortal.space: the website in site/, served as static assets on Cloudflare Workers.
+// Deploy from the repo root: npx wrangler deploy     Local: npx wrangler dev
+// The games (monopoline/, nokhtebazi/) are separate Workers with their own configs.
+{
+  "name": "vortalsiterepo",
+  "compatibility_date": "2026-08-15",
+
+  // Every address without a matching file (vortal.space/cisfactions, ...) gets
+  // index.html, and script.js shows the right page for it.
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "single-page-application"
+  },
+
+  "routes": [
+    { "pattern": "vortal.space", "custom_domain": true }
+  ]
+}
