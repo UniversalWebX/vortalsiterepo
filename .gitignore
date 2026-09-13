@@ -2,3 +2,9 @@
 .wrangler/
 .dev.vars
 node_modules/
+
+# DonutDuck: never publish its settings, tokens, or database
+donutduck/.env
+*.db
+__pycache__/
+*.pyc

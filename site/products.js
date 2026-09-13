@@ -100,6 +100,7 @@ window.VORTAL_PRODUCTS = [
     "note": "Also: moderation with numbered cases, vouches, Twitch live alerts, partnerships, role menus, a starboard, and a web dashboard with Discord login. /docs lists every command straight from the bot, so the list never goes out of date. It reads DonutSMP data but can't run in-game commands; the server's data is read-only to every bot.",
     "link": { "label": "", "url": "" },
     "guide": { "label": "Read the tutorial (PDF)", "url": "/files/DonutDuck-Tutorial.pdf" },
+    "source": "https://github.com/UniversalWebX/vortalsiterepo/tree/main/donutduck",
     "visual": "giveaway"
   },
   {
