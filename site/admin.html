@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vortal Inbox</title>
+<meta name="theme-color" content="#0A0711">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14' shape-rendering='crispEdges'%3E%3Crect width='12' height='14' fill='%232A1F44'/%3E%3Crect x='2' y='2' width='8' height='10' fill='%236A1FCB'/%3E%3Crect x='3' y='3' width='2' height='3' fill='%23E05BC4'/%3E%3Crect x='6' y='6' width='3' height='2' fill='%23A862FF'/%3E%3Crect x='4' y='9' width='2' height='1' fill='%237B9BFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/admin.css">
+</head>
+<body class="admin">
+
+<header class="abar">
+  <a class="brand" href="/" aria-label="Vortal home">
+    <svg class="mark" viewBox="0 0 12 14" shape-rendering="crispEdges" aria-hidden="true">
+      <rect width="12" height="14" fill="#2A1F44"/><rect x="2" y="2" width="8" height="10" fill="#6A1FCB"/>
+      <rect x="3" y="3" width="2" height="3" fill="#E05BC4"/><rect x="6" y="6" width="3" height="2" fill="#A862FF"/>
+      <rect x="4" y="9" width="2" height="1" fill="#7B9BFF"/>
+    </svg>
+    <span class="brand__word">Vortal</span>
+  </a>
+  <span class="abar__title">Inbox</span>
+  <div class="abar__actions" id="barActions" hidden>
+    <span class="abar__sync" id="sync" aria-live="polite"></span>
+    <button class="abtn" type="button" id="setupBtn">Email setup</button>
+    <button class="abtn" type="button" id="refreshBtn">Refresh</button>
+    <button class="abtn" type="button" id="lockBtn">Lock</button>
+  </div>
+</header>
+
+<!-- Locked -->
+<main class="alogin" id="login">
+  <form class="alogin__card" id="loginForm">
+    <p class="eyebrow">Private</p>
+    <h1>Vortal inbox</h1>
+    <p class="alogin__lede">Messages from the contact form and any email routed to vortal.space. Enter the key you set with <code>wrangler secret put ADMIN_KEY</code>.</p>
+    <label class="afield">
+      <span>Inbox key</span>
+      <input id="keyInput" type="password" autocomplete="current-password" required>
+    </label>
+    <label class="acheck"><input type="checkbox" id="remember"> Remember on this device</label>
+    <p class="aerror" id="loginError" role="alert" hidden></p>
+    <button class="btn btn--solid" type="submit" id="unlockBtn">Unlock</button>
+  </form>
+</main>
+
+<!-- Unlocked -->
+<main class="apanel" id="panel" hidden>
+  <aside class="alist">
+    <section class="astats" aria-label="Overview">
+      <div class="astat"><b id="statNew">0</b><span>New</span></div>
+      <div class="astat"><b id="statInbox">0</b><span>In the inbox</span></div>
+      <div class="astat astat--chart"><svg id="spark" viewBox="0 0 140 36" preserveAspectRatio="none" aria-hidden="true"></svg><span id="sparkLabel">Last 14 days</span></div>
+    </section>
+
+    <div class="afilters">
+      <div class="aseg" id="statusSeg" role="group" aria-label="Show">
+        <button type="button" data-status="inbox" aria-pressed="true">Inbox</button>
+        <button type="button" data-status="new" aria-pressed="false">New</button>
+        <button type="button" data-status="archived" aria-pressed="false">Archived</button>
+        <button type="button" data-status="all" aria-pressed="false">All</button>
+      </div>
+      <div class="aseg aseg--small" id="sourceSeg" role="group" aria-label="From">
+        <button type="button" data-source="" aria-pressed="true">Everything</button>
+        <button type="button" data-source="form" aria-pressed="false">Contact form</button>
+        <button type="button" data-source="email" aria-pressed="false">Email</button>
+      </div>
+      <input class="asearch" id="search" type="search" placeholder="Search names, emails, messages   ( / )" aria-label="Search messages">
+    </div>
+
+    <ul class="arows" id="rows" aria-label="Messages"></ul>
+    <p class="aempty" id="listEmpty" hidden></p>
+    <button class="abtn abtn--wide" type="button" id="moreBtn" hidden>Load older messages</button>
+  </aside>
+
+  <section class="adetail" id="detail" aria-live="polite">
+    <div class="aplaceholder">
+      <p>Pick a message to read it.</p>
+      <p class="akeys"><kbd>J</kbd> <kbd>K</kbd> move &nbsp; <kbd>E</kbd> archive &nbsp; <kbd>U</kbd> unread &nbsp; <kbd>R</kbd> reply &nbsp; <kbd>/</kbd> search</p>
+    </div>
+  </section>
+</main>
+
+<dialog class="adialog" id="setupDialog">
+  <form method="dialog">
+    <h2>Email setup</h2>
+    <ul class="achecklist" id="checklist"></ul>
+    <p class="adialog__note">These settings are placeholders in <code>wrangler.jsonc</code>. The steps are in <code>worker/README.md</code>: enable Email Routing, verify your address, route <code>contact@vortal.space</code> to the <code>vortalsiterepo</code> Worker, fill in the addresses, and deploy.</p>
+    <button class="btn btn--line" value="close">Close</button>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script src="/admin.js"></script>
+</body>
+</html>

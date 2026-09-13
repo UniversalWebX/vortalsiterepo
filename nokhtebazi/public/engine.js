@@ -100,9 +100,14 @@ export function winners(g) {
 }
 
 /* ---------- computer opponent ----------
-   1. Close any box that is one line from done.
-   2. Otherwise draw a line that gives nothing away.
-   3. Otherwise give away the shortest chain it can find. */
+   Three levels:
+     easy    notices a box it could close only half the time, and mostly
+             draws anywhere, so it hands out boxes freely
+     normal  usually takes boxes and avoids giving them away, but slips
+             now and then and doesn't plan the endgame
+     hard    never misses a box, never gives one away while it has a
+             choice, and at the end gives away the shortest chain it can */
+export const LEVELS = ['easy', 'normal', 'hard'];
 function freeLines(g) {
   const out = [];
   g.h.forEach((o, i) => { if (o < 0) out.push(['h', i]); });
@@ -134,13 +139,24 @@ function shuffled(list, rand) {
   return a;
 }
 
-export function botMove(g, rand = Math.random) {
+export function botMove(g, rand = Math.random, level = 'hard') {
   const free = freeLines(g);
-  const closer = free.find(([k, i]) => lineBoxes(g, k, i).some(b => g.boxes[b] < 0 && sidesDrawn(g, b) === 3));
-  if (closer) return closer;
-
+  const any = list => list[(rand() * list.length) | 0];
+  const closers = free.filter(([k, i]) => lineBoxes(g, k, i).some(b => g.boxes[b] < 0 && sidesDrawn(g, b) === 3));
   const safe = free.filter(([k, i]) => lineBoxes(g, k, i).every(b => sidesDrawn(g, b) < 2));
-  if (safe.length) return safe[(rand() * safe.length) | 0];
+
+  if (level === 'easy') {
+    if (closers.length && rand() < 0.5) return any(closers);
+    return safe.length && rand() < 0.4 ? any(safe) : any(free);
+  }
+  if (level === 'normal') {
+    if (closers.length && rand() < 0.85) return any(closers);
+    if (safe.length && rand() < 0.8) return any(safe);
+    return any(free);
+  }
+
+  if (closers.length) return closers[0];
+  if (safe.length) return any(safe);
 
   const pool = free.length > 60 ? shuffled(free, rand).slice(0, 60) : free;
   let best = pool[0], cost = Infinity;

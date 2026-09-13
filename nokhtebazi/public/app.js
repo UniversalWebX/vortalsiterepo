@@ -2,7 +2,7 @@
    Nokhtebazi client: the home screen, online rooms, and the board.
    The rules live in engine.js, which the server runs too.
    ═══════════════════════════════════════════════════════════════ */
-import { SIZES, newGame, play, botMove, winners, isFree } from './engine.js';
+import { SIZES, LEVELS, newGame, play, botMove, winners, isFree } from './engine.js';
 
 const COLORS = ['#A259FF', '#E05BC4', '#7B9BFF', '#FF6FAE', '#C9A7FF', '#8B7BFF', '#C77DDB'];
 const COLOR_NAMES = ['Violet', 'Orchid', 'Periwinkle', 'Rose', 'Lavender', 'Iris', 'Plum'];
@@ -33,7 +33,8 @@ const WORDS = {
     quick: 'Quick', classic: 'Classic', big: 'Big', marathon: 'Marathon',
     online: 'Play online', create: 'Create a room', roomCode: 'Room code', join: 'Join',
     local: 'Play on this device', vsCpu: 'Computer', players: '{n} players', start: 'Start', resume: 'Resume your game',
-    computer: 'Computer', playerN: 'Player {n}',
+    computer: 'Computer', playerN: 'Player {n}', computerLevel: 'Computer ({level})',
+    difficulty: 'Difficulty', easy: 'Easy', normal: 'Normal', hard: 'Hard',
     room: 'Room', copyLink: 'Copy invite link', copied: 'Invite link copied', host: 'Host', you: 'You', here: 'Here', away: 'Away',
     needTwo: 'You need at least two players to start.', waitingHost: 'Waiting for the host to start…',
     watchingNote: 'A game is in progress, so you are watching.',
@@ -58,7 +59,8 @@ const WORDS = {
     quick: 'سریع', classic: 'کلاسیک', big: 'بزرگ', marathon: 'ماراتن',
     online: 'بازی آنلاین', create: 'ساخت اتاق', roomCode: 'کد اتاق', join: 'ورود',
     local: 'بازی روی همین دستگاه', vsCpu: 'رایانه', players: '{n} نفر', start: 'شروع', resume: 'ادامهٔ بازی',
-    computer: 'رایانه', playerN: 'بازیکن {n}',
+    computer: 'رایانه', playerN: 'بازیکن {n}', computerLevel: 'رایانه ({level})',
+    difficulty: 'سطح', easy: 'آسان', normal: 'متوسط', hard: 'سخت',
     room: 'اتاق', copyLink: 'کپی لینک دعوت', copied: 'لینک دعوت کپی شد', host: 'میزبان', you: 'شما', here: 'حاضر', away: 'غایب',
     needTwo: 'برای شروع دست‌کم دو بازیکن لازم است.', waitingHost: 'منتظر شروع بازی توسط میزبان…',
     watchingNote: 'بازی در جریان است؛ شما تماشاگر هستید.',
@@ -105,6 +107,7 @@ const S = {
   color: COLORS.includes(store.get('color')) ? store.get('color') : COLORS[0],
   size: SIZES[store.get('size')] ? store.get('size') : 'classic',
   opponents: ['cpu', '2', '3', '4'].includes(store.get('opponents')) ? store.get('opponents') : 'cpu',
+  level: LEVELS.includes(store.get('level')) ? store.get('level') : 'normal',
   // online
   code: null, token: null, you: -1, room: null, ws: null, leaving: false, failures: 0, pending: null,
   cursors: new Map(),
@@ -171,6 +174,8 @@ function renderHome() {
   choice($('#sizes'), sizeOptions(), S.size, v => { S.size = v; store.set('size', v); renderHome(); });
   choice($('#opponents'), [['cpu', t('vsCpu')], ...[2, 3, 4].map(n => [String(n), t('players', { n })])], S.opponents,
     v => { S.opponents = v; store.set('opponents', v); renderHome(); });
+  $('#levelField').hidden = S.opponents !== 'cpu';
+  choice($('#levels'), LEVELS.map(l => [l, t(l)]), S.level, v => { S.level = v; store.set('level', v); renderHome(); });
   $('#resume').hidden = !loadLocal();
 }
 
@@ -338,18 +343,22 @@ function renderGame() {
   const g = game();
   if (!g) return;
   const ps = players();
+  noteChanges(g);
+  const now = performance.now();
+  const turnChanged = fx.turn !== g.turn;
+  fx.turn = g.turn;
   const code = $('#hudCode');
   code.hidden = S.mode !== 'online';
   if (S.mode === 'online') code.textContent = S.you < 0 ? `${S.room.code} · ${t('watching')}` : S.room.code;
 
   $('#scores').innerHTML = ps.map((p, i) => `
-    <li class="${!g.over && i === g.turn ? 'is-turn' : ''}${p.online === false || p.left ? ' is-away' : ''}" style="--c:${p.color}">
+    <li class="${!g.over && i === g.turn ? 'is-turn' : ''}${p.online === false || p.left ? ' is-away' : ''}${now - (fx.bumped.get(i) || -1e9) < 150 ? ' bump' : ''}" style="--c:${p.color}">
       <i class="dot"></i><span class="pname">${esc(p.name)}${S.mode === 'online' && i === S.you ? ` (${esc(t('you'))})` : ''}</span><b>${g.scores[i]}</b>
     </li>`).join('');
 
   const turn = $('#turn');
   if (g.over) turn.innerHTML = S.overHidden ? `<button type="button" id="showOver">${esc(t('gameOver'))}</button>` : '';
-  else turn.innerHTML = `<span style="--c:${ps[g.turn] ? ps[g.turn].color : 'transparent'}">${esc(turnText(g, ps))}</span>`;
+  else turn.innerHTML = `<span${turnChanged ? ' class="is-new"' : ''} style="--c:${ps[g.turn] ? ps[g.turn].color : 'transparent'}">${esc(turnText(g, ps))}</span>`;
 
   if (S.fitFor !== `${g.cols}x${g.rows}`) fit();
   if (g.over && !S.overHidden) showOver(); else $('#over').hidden = true;
@@ -389,7 +398,7 @@ function saveLocal() {
 function startLocal() {
   const others = COLORS.filter(c => c !== S.color);
   const list = [{ name: S.name.trim() || t('you'), color: S.color }];
-  if (S.opponents === 'cpu') list.push({ name: t('computer'), color: others[0], cpu: true });
+  if (S.opponents === 'cpu') list.push({ name: t('computerLevel', { level: t(S.level) }), color: others[0], cpu: true, level: S.level });
   else for (let i = 1; i < Number(S.opponents); i++) list.push({ name: t('playerN', { n: i + 1 }), color: others[i - 1] });
   beginLocal({ players: list, game: newGame(S.size, list.length, 0), starter: 0 });
 }
@@ -412,7 +421,7 @@ function maybeBot() {
   if (S.mode !== 'local' || !g || g.over || !S.local.players[g.turn].cpu) return;
   botTimer = setTimeout(() => {
     if (S.mode !== 'local' || S.screen !== 'game') return;
-    const [kind, i] = botMove(g);
+    const [kind, i] = botMove(g, Math.random, S.local.players[g.turn].level || 'hard');
     play(g, g.turn, kind, i);
     saveLocal();
     renderGame();
@@ -477,14 +486,32 @@ function requestDraw() {
   requestAnimationFrame(draw);
 }
 
-function linePath(c, g, kind, i) {
+function lineEnds(g, kind, i) {
   if (kind === 'h') {
     const x = i % g.cols, y = (i / g.cols) | 0;
-    c.moveTo(x * GAP, y * GAP); c.lineTo((x + 1) * GAP, y * GAP);
-  } else {
-    const W = g.cols + 1, x = i % W, y = (i / W) | 0;
-    c.moveTo(x * GAP, y * GAP); c.lineTo(x * GAP, (y + 1) * GAP);
+    return [x * GAP, y * GAP, (x + 1) * GAP, y * GAP];
   }
+  const W = g.cols + 1, x = i % W, y = (i / W) | 0;
+  return [x * GAP, y * GAP, x * GAP, (y + 1) * GAP];
+}
+function linePath(c, g, kind, i, upTo = 1) {
+  const [x1, y1, x2, y2] = lineEnds(g, kind, i);
+  c.moveTo(x1, y1);
+  c.lineTo(x1 + (x2 - x1) * upTo, y1 + (y2 - y1) * upTo);
+}
+
+/* Motion: the newest line draws itself, fresh boxes fill in, scores bump. */
+const LINE_MS = 200, BOX_MS = 380;
+const easeOut = p => 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 3);
+const fx = { line: null, boxes: new Map(), bumped: new Map(), seen: null, turn: -1 };
+function noteChanges(g) {
+  const prev = fx.seen;
+  fx.seen = { moves: g.moves, boxes: g.boxes.slice(), scores: g.scores.slice() };
+  if (reduceMotion || !prev || prev.boxes.length !== g.boxes.length || g.moves !== prev.moves + 1) return;
+  const now = performance.now();
+  if (g.last) fx.line = { kind: g.last.kind, i: g.last.i, at: now };
+  g.boxes.forEach((o, b) => { if (o >= 0 && prev.boxes[b] < 0) fx.boxes.set(b, now + LINE_MS * 0.6); });
+  g.scores.forEach((s, p) => { if (s > prev.scores[p]) fx.bumped.set(p, now); });
 }
 
 // Draws a whole game in board units; the caller sets up the transform.
@@ -493,10 +520,12 @@ function paintBoard(c, g, colors, o = {}) {
     const owner = g.boxes[b];
     if (owner < 0) continue;
     const x = (b % g.cols) * GAP, y = ((b / g.cols) | 0) * GAP;
-    c.fillStyle = rgba(colors[owner], 0.24);
-    c.fillRect(x + 6, y + 6, GAP - 12, GAP - 12);
-    if (o.letters) {
-      c.fillStyle = rgba(colors[owner], 0.95);
+    const grow = o.fx && o.fx.boxes.has(b) ? easeOut(o.fx.boxes.get(b)) : 1;
+    const inset = 6 + (1 - grow) * GAP * 0.3;
+    c.fillStyle = rgba(colors[owner], 0.24 * grow + (1 - grow) * 0.5 * (grow > 0 ? 1 : 0));
+    c.fillRect(x + inset, y + inset, GAP - inset * 2, GAP - inset * 2);
+    if (o.letters && grow > 0.3) {
+      c.fillStyle = rgba(colors[owner], 0.95 * grow);
       c.font = `700 ${GAP * 0.4}px ${BOARD_FONT}`;
       c.textAlign = 'center';
       c.textBaseline = 'middle';
@@ -515,20 +544,30 @@ function paintBoard(c, g, colors, o = {}) {
     c.strokeStyle = rgba(o.preview.color, o.preview.alpha);
     c.beginPath(); linePath(c, g, o.preview.kind, o.preview.i); c.stroke();
   }
+  const drawing = o.fx && o.fx.line;          // the newest line, still growing
+  const isDrawing = (kind, i) => drawing && drawing.kind === kind && drawing.i === i;
   colors.forEach((color, p) => {
     c.beginPath();
     let any = false;
-    g.h.forEach((q, i) => { if (q === p) { linePath(c, g, 'h', i); any = true; } });
-    g.v.forEach((q, i) => { if (q === p) { linePath(c, g, 'v', i); any = true; } });
+    g.h.forEach((q, i) => { if (q === p && !isDrawing('h', i)) { linePath(c, g, 'h', i); any = true; } });
+    g.v.forEach((q, i) => { if (q === p && !isDrawing('v', i)) { linePath(c, g, 'v', i); any = true; } });
     if (!any) return;
     c.strokeStyle = color;
     c.shadowColor = color;
     c.shadowBlur = o.glow ?? 10;
     c.stroke();
   });
+  if (drawing) {
+    const owner = (drawing.kind === 'h' ? g.h : g.v)[drawing.i];
+    const color = colors[owner] || '#FFFFFF';
+    c.strokeStyle = color;
+    c.shadowColor = color;
+    c.shadowBlur = 18;
+    c.beginPath(); linePath(c, g, drawing.kind, drawing.i, easeOut(drawing.p)); c.stroke();
+  }
   c.shadowBlur = 0;
 
-  if (g.last) {
+  if (g.last && !drawing) {
     c.strokeStyle = 'rgba(255,255,255,.85)';
     c.lineWidth = 2;
     c.beginPath(); linePath(c, g, g.last.kind, g.last.i); c.stroke();
@@ -551,12 +590,25 @@ function draw() {
   if (S.pending) preview = { kind: S.pending[0], i: S.pending[1], color: myColor(), alpha: 0.9 };
   else if (hover && myTurn() && isFree(g, hover[0], hover[1])) preview = { kind: hover[0], i: hover[1], color: myColor(), alpha: 0.5 };
 
+  // Work out how far along each animation is; keep drawing frames until they finish.
+  const now = performance.now();
+  const motion = { line: null, boxes: new Map() };
+  if (fx.line) {
+    const p = (now - fx.line.at) / LINE_MS;
+    if (p < 1) motion.line = { ...fx.line, p }; else fx.line = null;
+  }
+  for (const [b, at] of fx.boxes) {
+    const p = (now - at) / BOX_MS;
+    if (p < 1) motion.boxes.set(b, Math.max(0, p)); else fx.boxes.delete(b);
+  }
+
   ctx.save();
   ctx.translate(cam.x, cam.y);
   ctx.scale(cam.z, cam.z);
-  paintBoard(ctx, g, ps.map(p => p.color), { preview, letters: cam.z * GAP >= 26 ? ps.map(p => initial(p.name)) : null });
+  paintBoard(ctx, g, ps.map(p => p.color), { preview, fx: motion, letters: cam.z * GAP >= 26 ? ps.map(p => initial(p.name)) : null });
   ctx.restore();
   drawCursors(ps);
+  if (motion.line || motion.boxes.size) requestDraw();
 }
 
 // Other players' pointers, with their names, fading out when they stop moving.

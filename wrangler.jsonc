@@ -1,18 +1,46 @@
-// vortal.space: the website in site/, served as static assets on Cloudflare Workers.
+// vortal.space: the website in site/, served as static assets on Cloudflare Workers,
+// plus worker/site.js for the contact form, the inbox panel (/admin) and incoming email.
 // Deploy from the repo root: npx wrangler deploy     Local: npx wrangler dev
 // The games (monopoline/, nokhtebazi/) are separate Workers with their own configs.
 {
   "name": "vortalsiterepo",
+  "main": "worker/site.js",
   "compatibility_date": "2026-08-15",
 
-  // Every address without a matching file (vortal.space/cisfactions, ...) gets
-  // index.html, and script.js shows the right page for it.
+  // Every address without a matching file (vortal.space/cisfactions, /contact, ...)
+  // gets index.html, and site/script.js shows the right page. Only /api/* runs the Worker.
   "assets": {
     "directory": "./site",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
   },
+
+  // The inbox. Apply schema changes with: npx wrangler d1 migrations apply vortal-inbox --remote
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vortal-inbox",
+      "database_id": "dac2042a-2ae9-4f9f-88e4-18eb616c8d6a",
+      "migrations_dir": "worker/migrations"
+    }
+  ],
+
+  // Email settings. These are placeholders: blank means "off". Fill them in once
+  // Email Routing is enabled for vortal.space (see worker/README.md).
+  "vars": {
+    "MAIL_FROM": "",      // an address on vortal.space the bot sends from, e.g. "inbox@vortal.space"
+    "NOTIFY_TO": "",      // your own address, verified in Email Routing: gets a copy of each form message
+    "FORWARD_TO": "",     // your own address, verified in Email Routing: gets mail sent to contact@vortal.space
+    "AUTO_REPLY": "on"    // "off" stops the automatic "we got your message" reply to emails
+  },
+
+  // Uncomment (with NOTIFY_TO's address) to email yourself each contact-form message:
+  // "send_email": [{ "name": "NOTIFY", "destination_address": "you@example.com" }],
 
   "routes": [
     { "pattern": "vortal.space", "custom_domain": true }
-  ]
+  ],
+
+  "observability": { "enabled": true }
 }

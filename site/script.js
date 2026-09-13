@@ -17,8 +17,9 @@
   const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
   /* ---------- Products and pages ----------
-     vortal.space/ is the home page and vortal.space/<id> is that product's page.
-     Every address serves this same index.html; this decides what to show. */
+     vortal.space/ is the home page, vortal.space/<id> is that product's page,
+     and vortal.space/contact is the contact form. Every address serves this
+     same index.html; this decides what to show. */
   const products = V.products();
   const listed = products.filter(p => p.status !== 'hidden');
   const live = listed.filter(p => p.status === 'released');
@@ -215,6 +216,7 @@
               <h1 class="product__name">${esc(p.name)}</h1>
               ${p.summary ? `<p class="product__lede">${esc(p.summary)}</p>` : ''}
               ${actionsHTML(p)}
+              <p class="product__ask">Questions about ${esc(p.name)}? <a href="/contact?topic=${encodeURIComponent(p.name)}">Send us a message</a></p>
             </div>
             ${visualHTML(p)}
           </div>
@@ -241,13 +243,138 @@
       </section>`;
   }
 
+  /* ---------- Contact ---------- */
+  const topics = () => ['General', ...live.map(p => p.name), ...soon.map(p => p.name), 'Partnership', 'Bug report'];
+
+  function contactFormHTML(chosen) {
+    const all = topics();
+    const pick = all.includes(chosen) ? chosen : 'General';
+    return `
+      <form class="cform" id="contact-form" novalidate>
+        <div class="cform__row">
+          <label class="cfield"><span>Your name</span>
+            <input name="name" autocomplete="name" maxlength="80" required>
+            <em class="cfield__error" data-for="name" hidden></em></label>
+          <label class="cfield"><span>Your email</span>
+            <input name="email" type="email" autocomplete="email" maxlength="200" required>
+            <em class="cfield__error" data-for="email" hidden></em></label>
+        </div>
+        <label class="cfield"><span>What it's about</span>
+          <select name="topic">${all.map(t => `<option${t === pick ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></label>
+        <label class="cfield"><span>Message</span>
+          <textarea name="message" rows="7" maxlength="5000" required></textarea>
+          <em class="cfield__error" data-for="message" hidden></em>
+          <small class="cfield__count">0 / 5000</small></label>
+        <label class="cform__trap" aria-hidden="true">Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label>
+        <p class="cform__status" role="alert" hidden></p>
+        <button class="btn btn--solid" type="submit">Send message</button>
+      </form>`;
+  }
+
+  function contactPageHTML() {
+    return `
+      <section class="contact">
+        <div class="wrap contact__grid">
+          <div class="contact__intro">
+            <nav class="crumbs" aria-label="Breadcrumb">
+              <a href="/">Vortal</a><span aria-hidden="true">/</span><span aria-current="page">Contact</span>
+            </nav>
+            <h1 class="product__name">Get in touch</h1>
+            <p class="product__lede">A question about something we make, a bug to report, or an idea for Vortal? Send a message and it goes straight to our inbox.</p>
+            <dl class="contact__tips">
+              <div><dt>Bug reports</dt><dd>Say what you did, what you expected, and what happened instead.</dd></div>
+              <div><dt>Partnerships</dt><dd>Tell us about your server or project and what you have in mind.</dd></div>
+              <div><dt>Replies</dt><dd>We answer at the email address you give, usually within a couple of days.</dd></div>
+            </dl>
+          </div>
+          <div class="contact__card" id="contact-card">${contactFormHTML(new URLSearchParams(location.search).get('topic'))}</div>
+        </div>
+      </section>`;
+  }
+
+  const CONTACT_ERRORS = {
+    fast: 'That was quick! Wait a moment, then press Send again.',
+    limit: "You've sent several messages in the last hour. Please try again later.",
+    origin: 'Please send the form from vortal.space.',
+  };
+
+  function wireContact() {
+    const card = document.getElementById('contact-card');
+    if (!card) return;
+    const started = Date.now();
+    const form = card.querySelector('form');
+    const field = n => form.elements.namedItem(n);
+    const count = form.querySelector('.cfield__count');
+    field('message').addEventListener('input', () => { count.textContent = `${field('message').value.length} / 5000`; });
+    const fieldError = (name, text) => {
+      const el = form.querySelector(`[data-for="${name}"]`);
+      el.textContent = text || '';
+      el.hidden = !text;
+      field(name).setAttribute('aria-invalid', text ? 'true' : 'false');
+    };
+    const status = text => { const el = form.querySelector('.cform__status'); el.textContent = text || ''; el.hidden = !text; };
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = {
+        name: field('name').value.trim(), email: field('email').value.trim(), topic: field('topic').value,
+        message: field('message').value.trim(), website: field('website').value, started,
+      };
+      const problems = {
+        name: data.name ? '' : 'Add your name.',
+        email: /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(data.email) ? '' : 'Add an email address we can reply to.',
+        message: data.message.length >= 10 ? '' : 'Write a little more: at least 10 characters.',
+      };
+      Object.entries(problems).forEach(([k, v]) => fieldError(k, v));
+      status('');
+      const first = Object.keys(problems).find(k => problems[k]);
+      if (first) { field(first).focus(); return; }
+
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      try {
+        const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok) {
+          card.innerHTML = `
+            <div class="csent" tabindex="-1">
+              <span class="csent__mark" aria-hidden="true"></span>
+              <h2>Message sent</h2>
+              <p>Thanks, ${esc(data.name)}. We'll reply to <b>${esc(data.email)}</b>.</p>
+              <button class="btn btn--line" type="button">Send another message</button>
+            </div>`;
+          card.querySelector('.csent').focus();
+          card.querySelector('button').addEventListener('click', () => { card.innerHTML = contactFormHTML(data.topic); wireContact(); });
+          return;
+        }
+        const byField = { name: 'Add your name.', email: "That email address doesn't look right.", message: 'Write a little more: at least 10 characters.' };
+        if (byField[out.error]) { fieldError(out.error, byField[out.error]); field(out.error).focus(); }
+        else status(CONTACT_ERRORS[out.error] || 'Something went wrong on our side. Please try again in a minute.');
+      } catch {
+        status("Couldn't send. Check your connection and try again.");
+      } finally {
+        if (btn.isConnected) { btn.disabled = false; btn.textContent = 'Send message'; }
+      }
+    });
+  }
+
   /* ---------- Render the page for this address ---------- */
   if (route) {
     document.documentElement.dataset.route = 'page';
-    document.getElementById('page').innerHTML = current ? productPageHTML(current) : missingHTML();
-    document.title = current ? `${current.name} · Vortal` : 'Page not found · Vortal';
+    const page = document.getElementById('page');
     const desc = document.querySelector('meta[name="description"]');
-    if (current && current.summary && desc) desc.setAttribute('content', current.summary);
+    if (route === 'contact') {
+      page.innerHTML = contactPageHTML();
+      document.title = 'Contact · Vortal';
+      if (desc) desc.setAttribute('content', 'Send Vortal a message: questions, bug reports, partnerships.');
+      document.querySelectorAll('.nav__link[href="/contact"]').forEach(a => a.setAttribute('aria-current', 'page'));
+      wireContact();
+    } else {
+      page.innerHTML = current ? productPageHTML(current) : missingHTML();
+      document.title = current ? `${current.name} · Vortal` : 'Page not found · Vortal';
+      if (current && current.summary && desc) desc.setAttribute('content', current.summary);
+    }
   } else {
     document.getElementById('release-list').innerHTML = live.length
       ? live.map(cardHTML).join('')
@@ -286,7 +413,8 @@
   }
 
   document.getElementById('foot-links').innerHTML =
-    listed.map(p => `<li><a href="${href(p)}"${p === current ? ' aria-current="page"' : ''}>${esc(p.name)}</a></li>`).join('');
+    listed.map(p => `<li><a href="${href(p)}"${p === current ? ' aria-current="page"' : ''}>${esc(p.name)}</a></li>`).join('') +
+    `<li><a href="/contact"${route === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>`;
 
   /* ---------- Products dropdown ---------- */
   const menuBtn = document.getElementById('menu-btn');
@@ -536,4 +664,22 @@
     });
     board.appendChild(frag);
   });
+
+  /* ---------- Scroll reveal ----------
+     Blocks below the fold rise into place as they scroll into view. Anything
+     already on screen is left alone, so the first view never waits on this. */
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -6% 0px' });
+    const fold = innerHeight * 0.95;
+    document.querySelectorAll('.section-head, .pgrid > .pcard, .soon__list > li, .disc, .next__inner, .features > div, .callout, .product__soon')
+      .forEach(el => {
+        if (el.getBoundingClientRect().top < fold) return;
+        const i = [...el.parentElement.children].indexOf(el);
+        el.style.setProperty('--delay', `${Math.min(i, 5) * 70}ms`);
+        el.classList.add('reveal');
+        io.observe(el);
+      });
+  }
 })();
