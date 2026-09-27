@@ -30,7 +30,7 @@ window.VORTAL_PRODUCTS = [
     "kind": "PC, Mac & Android",
     "status": "released",
     "shade": "plum",
-    "spec": "Windows · Mac · Android · crossplay co-op for up to 8 · updates itself",
+    "spec": "Update 1 Beta · Windows · Mac · Android · crossplay co-op for up to 8",
     "summary": "A co-op factory builder in a toxic wasteland. Humanity is gone, production isn't: scavenge, build drills, smelters and conveyor lines, and push the last working machine through five directives.",
     "features": [
       { "label": "Automate", "text": "Drill → Smelt → Construct → Store" },
@@ -38,6 +38,7 @@ window.VORTAL_PRODUCTS = [
       { "label": "A 10 km wasteland", "text": "Ruined cities and meltdown sites near home, richer ore and meaner mutants the further you travel." },
       { "label": "Survive", "text": "Toxic storms, radiation, mutant packs, and two bosses: the Matriarch and the Warden Mk.IX." },
       { "label": "Crossplay co-op", "text": "Up to 8 players on PC, Mac and Android together, with join codes, proximity voice chat, emotes, and shared worlds." },
+      { "label": "Update 1 Beta", "text": "Belts pathfind around trees and tunnel through hills, a built-in wiki (F1), icons for every building, and voice chat that no longer lags." },
       { "label": "Mods", "text": "Add items, recipes, buildings, and scripts from a mods folder." }
     ],
     "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open the first time. Android: open the APK on your phone and allow the install. Every version updates itself from the main menu.",
