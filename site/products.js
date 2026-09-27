@@ -13,6 +13,7 @@
     features  List of { "label": "...", "text": "..." }. Put → between words to show steps.
     note      Extra line (optional). Wrap a key in backticks for a keycap: `K`
     link      { "label": "...", "url": "https://..." }. Leave url empty for no button.
+    more      More download buttons, e.g. other platforms: [{ "label": "...", "url": "..." }] (optional)
     source    Link to the code, e.g. a GitHub repo (optional). Adds a "View source" button.
     guide     { "label": "...", "url": "..." } for a manual or tutorial (optional). Put the file in
               site/files/ and link it as "/files/name.pdf".
@@ -26,21 +27,25 @@ window.VORTAL_PRODUCTS = [
     "id": "volatile",
     "name": "Volatile",
     "category": "games",
-    "kind": "PC game",
+    "kind": "PC, Mac & Android",
     "status": "released",
     "shade": "plum",
-    "spec": "Windows · co-op for up to 8 · updates itself",
+    "spec": "Windows · Mac · Android · crossplay co-op for up to 8 · updates itself",
     "summary": "A co-op factory builder in a toxic wasteland. Humanity is gone, production isn't: scavenge, build drills, smelters and conveyor lines, and push the last working machine through five directives.",
     "features": [
       { "label": "Automate", "text": "Drill → Smelt → Construct → Store" },
       { "label": "Worker bots", "text": "Build robots and order them to mine, feed the Terminal, refuel generators, or stand guard." },
       { "label": "A 10 km wasteland", "text": "Ruined cities and meltdown sites near home, richer ore and meaner mutants the further you travel." },
       { "label": "Survive", "text": "Toxic storms, radiation, mutant packs, and two bosses: the Matriarch and the Warden Mk.IX." },
-      { "label": "Co-op", "text": "Up to 8 players with join codes, proximity voice chat, emotes, and shared worlds." },
+      { "label": "Crossplay co-op", "text": "Up to 8 players on PC, Mac and Android together, with join codes, proximity voice chat, emotes, and shared worlds." },
       { "label": "Mods", "text": "Add items, recipes, buildings, and scripts from a mods folder." }
     ],
-    "note": "Unzip it and run Volatile.exe. From then on it updates itself from the main menu. Windows 10 or 11, 64-bit.",
+    "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open the first time. Android: open the APK on your phone and allow the install. Every version updates itself from the main menu.",
     "link": { "label": "Download for Windows (83 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
+    "more": [
+      { "label": "Download for Mac (58 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
+      { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" }
+    ],
     "visual": "shot",
     "image": "/files/volatile.jpg",
     "caption": "The first factory: drill → smelter → constructor, powered from the Directive Terminal"

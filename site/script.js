@@ -47,10 +47,12 @@
 
   function actionsHTML(p) {
     const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source), guide = V.safeUrl(p.guide.url);
-    if (!url && !src && !guide) return '';
+    const more = p.more.filter(m => V.safeUrl(m.url));
+    if (!url && !src && !guide && !more.length) return '';
     return `
       <div class="release__actions">
         ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
+        ${more.map(m => `<a class="btn btn--line" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.label)} <span aria-hidden="true">&#8599;</span></a>`).join('')}
         ${guide ? `<a class="btn ${url ? 'btn--line' : 'btn--solid'}" href="${esc(guide)}" target="_blank" rel="noopener">${esc(p.guide.label || 'Read the guide')} <span aria-hidden="true">&#8599;</span></a>` : ''}
         ${src ? `<a class="btn btn--line" href="${esc(src)}" target="_blank" rel="noopener">View source <span aria-hidden="true">&#8599;</span></a>` : ''}
       </div>`;

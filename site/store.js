@@ -56,6 +56,7 @@
       features: Array.isArray(p.features) ? p.features.map(f => ({ label: str(f && f.label), text: str(f && f.text) })) : [],
       note: str(p.note),
       link: { label: str(link.label), url: str(link.url) },
+      more: Array.isArray(p.more) ? p.more.map(m => ({ label: str(m && m.label), url: str(m && m.url) })).filter(m => m.url) : [],
       source: str(p.source),
       guide: { label: str((p.guide || {}).label), url: str((p.guide || {}).url) },
       visual: VISUALS[p.visual] ? p.visual : 'icon',
