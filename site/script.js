@@ -95,6 +95,9 @@
 
   // The picture itself: used bare on cards and framed on product pages.
   function visualArt(p) {
+    if (p.visual === 'shot') {
+      return `<img class="shot" src="${esc(p.image)}" alt="Screenshot of ${esc(p.name)}" loading="lazy" decoding="async">`;
+    }
     if (p.visual === 'dots') {
       return `<svg class="dots" viewBox="0 0 360 240" role="img" aria-label="Illustration of a Dots and Boxes game in progress, with two players' lines, claimed boxes, and another player's cursor">${dotsSVG(p)}</svg>`;
     }
@@ -146,10 +149,11 @@
         </ul><span>1 cell = 1 chunk = 16 &times; 16 blocks</span>`],
       board: ['The Line &middot; 40 spaces', '<span>&ldquo;Advance to Illinois Avenue. If you pass GO, collect $200.&rdquo;</span>'],
       giveaway: ['Giveaway message', '<span>Double or Keep: keep the prize, or win again for twice as much</span>'],
+      shot: ['In-game screenshot', `<span>${esc(p.caption || p.name)}</span>`],
     }[p.visual] || [esc(cat(p).group), `<span>${esc(p.name)}</span>`];
     return `
       <figure class="viz">
-        <div class="viz__head"><span>${frame[0]}</span><span>${p.visual === 'icon' ? esc(V.STATUSES[p.status]) : 'Illustration'}</span></div>
+        <div class="viz__head"><span>${frame[0]}</span><span>${p.visual === 'icon' ? esc(V.STATUSES[p.status]) : p.visual === 'shot' ? 'Screenshot' : 'Illustration'}</span></div>
         ${visualArt(p)}
         <figcaption class="viz__foot">${frame[1]}</figcaption>
       </figure>`;
@@ -161,7 +165,7 @@
       <a class="pcard" href="${href(p)}" style="--accent:${V.shadeHex(p.shade)}">
         <div class="pcard__media">${visualArt(p)}</div>
         <div class="pcard__body">
-          <div class="release__tags"><span class="tag">${esc(cat(p).label)}</span>${statusPill(p)}</div>
+          <div class="release__tags"><span class="tag">${esc(p.kind || cat(p).label)}</span>${statusPill(p)}</div>
           <h3 class="pcard__name">${esc(p.name)}</h3>
           ${p.summary ? `<p class="pcard__text">${esc(p.summary)}</p>` : ''}
           <span class="pcard__more">Details <span aria-hidden="true">&rarr;</span></span>
@@ -176,7 +180,7 @@
           <span class="px soon__icon" data-icon="${cat(p).icon}"></span>
           <span class="soon__head">
             <span class="soon__name">${esc(p.name)}</span>
-            <span class="soon__cat">${esc(cat(p).label)}</span>
+            <span class="soon__cat">${esc(p.kind || cat(p).label)}</span>
           </span>
           <span class="soon__text">${esc(p.summary)}</span>
           <span class="pill pill--soon">Coming soon</span>
@@ -210,7 +214,7 @@
                 <span aria-current="page">${esc(p.name)}</span>
               </nav>
               <div class="release__tags">
-                <span class="tag">${esc(cat(p).label)}</span>${statusPill(p)}
+                <span class="tag">${esc(p.kind || cat(p).label)}</span>${statusPill(p)}
                 ${p.spec ? `<span class="spec">${esc(p.spec)}</span>` : ''}
               </div>
               <h1 class="product__name">${esc(p.name)}</h1>
@@ -427,7 +431,7 @@
           <span class="px menu__icon" data-icon="${cat(p).icon}"></span>
           <span class="menu__text">
             <span class="menu__name">${esc(p.name)}</span>
-            <span class="menu__cat">${esc(cat(p).label)}</span>
+            <span class="menu__cat">${esc(p.kind || cat(p).label)}</span>
           </span>
         </a>`).join('')}
     </div>` : '';

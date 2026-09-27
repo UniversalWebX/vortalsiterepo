@@ -23,7 +23,7 @@
   };
 
   const STATUSES = { released: 'Out now', soon: 'Coming soon', hidden: 'Hidden' };
-  const VISUALS = { icon: 'Category icon', claims: 'Claims map', board: 'Board loop', dots: 'Dots board', giveaway: 'Giveaway message' };
+  const VISUALS = { icon: 'Category icon', claims: 'Claims map', board: 'Board loop', dots: 'Dots board', giveaway: 'Giveaway message', shot: 'Screenshot' };
 
   const ICONS = {
     dice:   ['#########', '#.......#', '#.#...#.#', '#.......#', '#...#...#', '#.......#', '#.#...#.#', '#.......#', '#########'],
@@ -59,6 +59,9 @@
       source: str(p.source),
       guide: { label: str((p.guide || {}).label), url: str((p.guide || {}).url) },
       visual: VISUALS[p.visual] ? p.visual : 'icon',
+      kind: str(p.kind),
+      image: safeUrl(str(p.image)),
+      caption: str(p.caption),
     };
   }
 

@@ -271,6 +271,7 @@ html[data-route="page"] #home { display: none; }
 .pcard__media .claims, .pcard__media .dots { width: 100%; height: auto; max-height: 100%; }
 .pcard__media .board { width: auto; height: 100%; }
 .pcard__media .viz__stage { width: 100%; height: 100%; aspect-ratio: auto; background: none; }
+.pcard__media .shot { width: 100%; height: 100%; aspect-ratio: auto; }
 .pcard__body { display: flex; flex-direction: column; gap: 12px; flex: 1; padding: 20px 22px 22px; }
 .pcard__name { margin: 4px 0 0; font: 700 28px/1 var(--display); text-transform: uppercase; letter-spacing: -.005em; }
 .pcard__text {
@@ -316,6 +317,7 @@ html[data-route="page"] #home { display: none; }
 .claims { width: 100%; height: auto; aspect-ratio: 160 / 96; image-rendering: crisp-edges; image-rendering: pixelated; }
 .dots { width: 100%; height: auto; background: var(--ground); }
 .dots text { font: 600 11px var(--mono); }
+.shot { display: block; width: 100%; height: auto; aspect-ratio: 16 / 7; object-fit: cover; border: 1px solid var(--line); background: var(--ground); }
 
 .viz__stage {
   display: grid; place-items: center;
