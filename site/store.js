@@ -63,6 +63,8 @@
       kind: str(p.kind),
       image: safeUrl(str(p.image)),
       caption: str(p.caption),
+      spotlight: p.spotlight === true,
+      gallery: Array.isArray(p.gallery) ? p.gallery.map(g => ({ src: safeUrl(str(g && g.src)), caption: str(g && g.caption) })).filter(g => g.src) : [],
     };
   }
 

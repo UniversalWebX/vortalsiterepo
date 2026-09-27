@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vortal</title>
-<meta name="description" content="Vortal makes games, Discord bots, physical devices, and mods for Minecraft, Geometry Dash, and Windhawk.">
+<title>Vortal · home of Volatile</title>
+<meta name="description" content="Volatile: a co-op factory builder in a toxic wasteland, for Windows, Mac and Android. Made by Vortal, who also make mods, Discord bots and devices.">
 <meta name="theme-color" content="#0A0711">
-<meta property="og:title" content="Vortal">
-<meta property="og:description" content="Games, mods, bots, and devices.">
+<meta property="og:title" content="Volatile · by Vortal">
+<meta property="og:description" content="Humanity is gone. Production isn't. A co-op factory builder for Windows, Mac and Android.">
+<meta property="og:image" content="https://vortal.space/files/volatile-factory.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14' shape-rendering='crispEdges'%3E%3Crect width='12' height='14' fill='%232A1F44'/%3E%3Crect x='2' y='2' width='8' height='10' fill='%236A1FCB'/%3E%3Crect x='3' y='3' width='2' height='3' fill='%23E05BC4'/%3E%3Crect x='6' y='6' width='3' height='2' fill='%23A862FF'/%3E%3Crect x='4' y='9' width='2' height='1' fill='%237B9BFF'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,39 +55,42 @@
 
   <!-- Home: shown at vortal.space/ -->
   <div id="home">
-    <section class="hero" id="top">
-      <div class="wrap hero__grid">
-        <div class="hero__copy">
-          <p class="eyebrow">Vortal &middot; studio</p>
-          <h1 class="stack" aria-label="Games, mods, bots, and devices.">
-            <span class="stack__line" style="--dot: var(--orchid)" aria-hidden="true">
-              <span class="stack__word">Games<i>.</i></span>
-              <span class="stack__note">Monopoline &middot; Nokhtebazi &mdash; play now</span>
-            </span>
-            <span class="stack__line" style="--dot: var(--violet)" aria-hidden="true">
-              <span class="stack__word">Mods<i>.</i></span>
-              <span class="stack__note">Minecraft &middot; Geometry&nbsp;Dash &middot; Windhawk</span>
-            </span>
-            <span class="stack__line" style="--dot: var(--iris)" aria-hidden="true">
-              <span class="stack__word">Bots<i>.</i></span>
-              <span class="stack__note">Discord &mdash; DonutDuck, coming soon</span>
-            </span>
-            <span class="stack__line" style="--dot: var(--periwinkle)" aria-hidden="true">
-              <span class="stack__word">Devices<i>.</i></span>
-              <span class="stack__note">Physical hardware &mdash; coming</span>
-            </span>
+    <!-- Volatile, front and centre -->
+    <section class="vhero" id="top">
+      <div class="vhero__bg" aria-hidden="true"></div>
+      <div class="wrap vhero__grid">
+        <div class="vhero__copy">
+          <p class="eyebrow eyebrow--haz">Vortal presents</p>
+          <h1 class="vhero__title">
+            <img class="vhero__logo" src="/files/volatile-logo.png" alt="Volatile" width="1050" height="255">
           </h1>
-          <p class="lede">Vortal makes games, Discord bots, physical devices, and mods for Minecraft, Geometry Dash, and Windhawk. Everything we've shipped is below, with more on the way.</p>
-          <div class="cta-row">
-            <a class="btn btn--solid" href="#releases">See the releases</a>
-            <a class="btn btn--line" href="https://monopoline.vortal.space/" target="_blank" rel="noopener">Play Monopoline <span aria-hidden="true">&#8599;</span></a>
+          <p class="vhero__tag">Humanity is gone. Production isn't.</p>
+          <p class="vhero__lede">A co-op factory builder in a toxic wasteland. Scavenge, drill, smelt and belt your way from scrap to a working industry, survive storms and mutants, and find out why you were built.</p>
+          <div class="vhero__badges" id="vhero-badges"></div>
+          <div class="cta-row" id="vhero-cta">
+            <a class="btn btn--haz" href="/volatile">Get Volatile</a>
           </div>
+          <p class="vhero__small">Free · crossplay between PC, Mac and Android · updates itself</p>
         </div>
+        <figure class="vshow" id="vshow">
+          <div class="vshow__frame">
+            <img class="vshow__img" id="vshow-img" src="/files/volatile-factory.jpg" alt="Volatile screenshot" width="1600" height="900">
+            <span class="vshow__corner vshow__corner--tl" aria-hidden="true"></span>
+            <span class="vshow__corner vshow__corner--br" aria-hidden="true"></span>
+          </div>
+          <figcaption class="vshow__cap" id="vshow-cap">The first factory, running on salvaged power</figcaption>
+          <div class="vshow__dots" id="vshow-dots" role="tablist" aria-label="Screenshots"></div>
+        </figure>
+      </div>
+    </section>
 
-        <div class="portal">
-          <div class="portal__glow" aria-hidden="true"></div>
-          <canvas id="portal" width="128" height="144" role="img" aria-label="A pixel-art obsidian portal, lit purple and shimmering"></canvas>
-        </div>
+    <section class="vgal" id="inside">
+      <div class="wrap">
+        <header class="section-head">
+          <h2>Inside Volatile</h2>
+          <p class="section-head__meta"><a href="/volatile">Everything about the game</a></p>
+        </header>
+        <div class="vgal__grid" id="vgal-grid"></div>
       </div>
     </section>
 
@@ -137,6 +141,14 @@
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- screenshot viewer -->
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
+    <button class="lightbox__btn lightbox__close" type="button" aria-label="Close">&times;</button>
+    <button class="lightbox__btn lightbox__prev" type="button" aria-label="Previous">&#8249;</button>
+    <figure class="lightbox__fig"><img id="lightbox-img" alt=""><figcaption id="lightbox-cap"></figcaption></figure>
+    <button class="lightbox__btn lightbox__next" type="button" aria-label="Next">&#8250;</button>
   </div>
 
   <!-- Product pages: vortal.space/<product id>, filled in by script.js -->

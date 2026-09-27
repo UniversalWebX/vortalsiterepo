@@ -20,6 +20,8 @@
     visual    icon | claims | board | dots | giveaway | shot
     kind      Badge text instead of the category's, e.g. "PC game" (optional)
     image     For visual "shot": a screenshot in site/files/, e.g. "/files/volatile.jpg"
+    gallery   More screenshots for the product page: [{ "src": "/files/...", "caption": "..." }] (optional)
+    spotlight true for the one product the home page is built around (optional)
     caption   For visual "shot": the line under the screenshot (optional)
 */
 window.VORTAL_PRODUCTS = [
@@ -41,14 +43,24 @@ window.VORTAL_PRODUCTS = [
       { "label": "Update 1 Beta", "text": "Belts pathfind around trees and tunnel through hills, a built-in wiki (F1), icons for every building, and voice chat that no longer lags." },
       { "label": "Mods", "text": "Add items, recipes, buildings, and scripts from a mods folder." }
     ],
-    "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open the first time. Android: open the APK on your phone and allow the install. Every version updates itself from the main menu.",
+    "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open. We're not on the Mac App Store yet, so macOS flags Volatile as coming from an unidentified developer; if it's still blocked, open System Settings, then Privacy & Security, and click Open Anyway. The first launch takes a minute or two while macOS prepares the graphics. Android: open the APK on your phone and allow the install. Every version updates itself from the main menu.",
     "link": { "label": "Download for Windows (83 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
     "more": [
-      { "label": "Download for Mac (58 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
+      { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
       { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" }
     ],
     "visual": "shot",
-    "image": "/files/volatile.jpg",
+    "image": "/files/volatile-factory.jpg",
+    "spotlight": true,
+    "gallery": [
+      { "src": "/files/volatile-factory.jpg", "caption": "The first factory: drills, smelter and constructor on salvaged power" },
+      { "src": "/files/volatile-storm.jpg", "caption": "A toxic storm front rolls in over the base" },
+      { "src": "/files/volatile-night.jpg", "caption": "Night shift: flood lamps, sliding doors and the Terminal's glow" },
+      { "src": "/files/volatile-bots.jpg", "caption": "Worker bots, each in its own paint job, waiting for a program" },
+      { "src": "/files/volatile-vehicles.jpg", "caption": "Rovers and haulers, driven or on autopilot" },
+      { "src": "/files/volatile-boss.jpg", "caption": "The Matriarch and the Warden Mk.IX" },
+      { "src": "/files/volatile-tablet.jpg", "caption": "The field datapad: map, story log and a built-in wiki" }
+    ],
     "caption": "The first factory: drill → smelter → constructor, powered from the Directive Terminal"
   },
   {

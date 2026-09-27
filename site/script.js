@@ -163,9 +163,11 @@
 
   /* ---------- Building blocks ---------- */
   function cardHTML(p) {
+    const haz = p.id === 'volatile';
     return `
-      <a class="pcard" href="${href(p)}" style="--accent:${V.shadeHex(p.shade)}">
-        <div class="pcard__media">${visualArt(p)}</div>
+      <a class="pcard${haz ? ' pcard--haz' : ''}" href="${href(p)}" style="--accent:${haz ? '#F29E2E' : V.shadeHex(p.shade)}">
+        ${haz ? '<span class="haz-ribbon">Update 1 Beta</span>' : ''}
+        <div class="pcard__media">${visualArt(p)}${haz ? '<img class="haz-emblem" src="/files/volatile-emblem.png" alt="" aria-hidden="true">' : ''}</div>
         <div class="pcard__body">
           <div class="release__tags"><span class="tag">${esc(p.kind || cat(p).label)}</span>${statusPill(p)}</div>
           <h3 class="pcard__name">${esc(p.name)}</h3>
@@ -205,8 +207,14 @@
         <section class="wrap product-body">
           <p class="product__soon">Part of Vortal's <a href="/#make">${esc(cat(p).group)}</a>: ${esc(cat(p).blurb)}</p>
         </section>`;
+    const gallery = p.gallery.length ? `
+        <section class="wrap vgal vgal--page">
+          <header class="section-head section-head--tight"><h2>Screenshots</h2></header>
+          <div class="vgal__grid">${galleryHTML(p.gallery)}</div>
+        </section>` : '';
+    const haz = p.id === 'volatile';
     return `
-      <article class="product" style="--accent:${V.shadeHex(p.shade)}">
+      <article class="product${haz ? ' product--haz' : ''}" style="--accent:${haz ? '#F29E2E' : V.shadeHex(p.shade)}">
         <section class="product-hero">
           <div class="wrap product-hero__grid">
             <div class="product-hero__copy">
@@ -227,6 +235,7 @@
             ${visualHTML(p)}
           </div>
         </section>
+        ${gallery}
         ${body}
         ${others.length ? `
         <section class="wrap more">
@@ -237,6 +246,45 @@
           <div class="pgrid">${others.map(cardHTML).join('')}</div>
         </section>` : ''}
       </article>`;
+  }
+
+  function galleryHTML(list) {
+    return list.map((g, i) => `
+      <button class="vgal__item" type="button" data-shot="${i}">
+        <img src="${esc(g.src)}" alt="${esc(g.caption)}" loading="lazy" decoding="async" width="1600" height="900">
+        <span class="vgal__cap">${esc(g.caption)}</span>
+      </button>`).join('');
+  }
+
+  /* ---------- Screenshot viewer ---------- */
+  let shots = [];
+  let shotAt = 0;
+  const lb = document.getElementById('lightbox');
+  function showShot(i) {
+    if (!shots.length) return;
+    shotAt = (i + shots.length) % shots.length;
+    document.getElementById('lightbox-img').src = shots[shotAt].src;
+    document.getElementById('lightbox-img').alt = shots[shotAt].caption;
+    document.getElementById('lightbox-cap').textContent = shots[shotAt].caption;
+    lb.hidden = false;
+    document.body.classList.add('no-scroll');
+  }
+  function closeShot() { lb.hidden = true; document.body.classList.remove('no-scroll'); }
+  if (lb) {
+    lb.querySelector('.lightbox__close').addEventListener('click', closeShot);
+    lb.querySelector('.lightbox__prev').addEventListener('click', () => showShot(shotAt - 1));
+    lb.querySelector('.lightbox__next').addEventListener('click', () => showShot(shotAt + 1));
+    lb.addEventListener('click', e => { if (e.target === lb) closeShot(); });
+    document.addEventListener('keydown', e => {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') closeShot();
+      if (e.key === 'ArrowLeft') showShot(shotAt - 1);
+      if (e.key === 'ArrowRight') showShot(shotAt + 1);
+    });
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-shot]');
+      if (b) showShot(+b.dataset.shot);
+    });
   }
 
   function missingHTML() {
@@ -378,10 +426,53 @@
       wireContact();
     } else {
       page.innerHTML = current ? productPageHTML(current) : missingHTML();
+      if (current) shots = current.gallery;
       document.title = current ? `${current.name} · Vortal` : 'Page not found · Vortal';
       if (current && current.summary && desc) desc.setAttribute('content', current.summary);
     }
   } else {
+    const star = listed.find(p => p.spotlight) || null;
+    if (star) {
+      shots = star.gallery.length ? star.gallery : [{ src: star.image, caption: star.caption }];
+      const badges = [star.kind, ...(star.spec ? star.spec.split('·').map(s => s.trim()).filter(Boolean) : [])];
+      document.getElementById('vhero-badges').innerHTML = badges.map((b, i) => `<span class="${i === 0 ? 'vbadge vbadge--hot' : 'vbadge'}">${esc(b)}</span>`).join('');
+      const dl = [star.link, ...star.more].filter(l => V.safeUrl(l.url));
+      document.getElementById('vhero-cta').innerHTML = dl.map((l, i) =>
+        `<a class="btn ${i === 0 ? 'btn--haz' : 'btn--line btn--line-haz'}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} <span aria-hidden="true">&#8595;</span></a>`).join('') +
+        `<a class="btn btn--line btn--line-haz" href="${href(star)}">Details</a>`;
+      document.getElementById('vgal-grid').innerHTML = galleryHTML(shots);
+      // hero slideshow
+      const img = document.getElementById('vshow-img');
+      const cap = document.getElementById('vshow-cap');
+      const dots = document.getElementById('vshow-dots');
+      let at = 0;
+      let timer = 0;
+      dots.innerHTML = shots.map((g, i) => `<button class="vshow__dot" type="button" role="tab" aria-label="${esc(g.caption)}" data-i="${i}"></button>`).join('');
+      const go = i => {
+        at = (i + shots.length) % shots.length;
+        img.classList.add('is-fading');
+        setTimeout(() => {
+          img.src = shots[at].src;
+          img.alt = shots[at].caption;
+          cap.textContent = shots[at].caption;
+          img.classList.remove('is-fading');
+        }, reduceMotion ? 0 : 280);
+        dots.querySelectorAll('.vshow__dot').forEach((d, k) => d.setAttribute('aria-selected', String(k === at)));
+      };
+      const auto = () => { clearInterval(timer); if (!reduceMotion) timer = setInterval(() => go(at + 1), 5200); };
+      dots.addEventListener('click', e => { const d = e.target.closest('[data-i]'); if (d) { go(+d.dataset.i); auto(); } });
+      img.addEventListener('click', () => showShot(at));
+      img.style.cursor = 'zoom-in';
+      go(0);
+      auto();
+      // preload the rest so the slideshow never flashes
+      shots.slice(1).forEach(g => { const pre = new Image(); pre.src = g.src; });
+    } else {
+      document.getElementById('top').hidden = true;
+      document.getElementById('inside').hidden = true;
+    }
+    // the spotlight game first, then everything else
+    live.sort((a, b) => (b.spotlight === true) - (a.spotlight === true));
     document.getElementById('release-list').innerHTML = live.length
       ? live.map(cardHTML).join('')
       : '<p class="empty">Nothing released yet. Check back soon.</p>';
