@@ -14,6 +14,9 @@
     note      Extra line (optional). Wrap a key in backticks for a keycap: `K`
     link      { "label": "...", "url": "https://..." }. Leave url empty for no button.
     more      More download buttons, e.g. other platforms: [{ "label": "...", "url": "..." }] (optional)
+              Add "minor": true to keep a button off the home-page hero (it still shows on the product page).
+    hosting   A "host a server" guide on the product page (optional): { title, lede, options: [{ name, tag, steps: [{ text, code }], link }],
+              commands: [[command, what it does]], flags: [[flag, what it does]], faq: [{ q, a }] }. Linked as /<id>#server.
     source    Link to the code, e.g. a GitHub repo (optional). Adds a "View source" button.
     guide     { "label": "...", "url": "..." } for a manual or tutorial (optional). Put the file in
               site/files/ and link it as "/files/name.pdf".
@@ -41,13 +44,15 @@ window.VORTAL_PRODUCTS = [
       { "label": "Survive", "text": "Toxic storms, radiation, mutant packs, and two bosses: the Matriarch and the Warden Mk.IX." },
       { "label": "Crossplay co-op", "text": "Up to 8 players on PC, Mac and Android together, with join codes, proximity voice chat, emotes, and shared worlds." },
       { "label": "Update 1 Beta", "text": "Belts pathfind around trees and tunnel through hills, a built-in wiki (F1), icons for every building, and voice chat that no longer lags." },
-      { "label": "Mods", "text": "Add items, recipes, buildings, and scripts from a mods folder." }
+      { "label": "Dedicated servers", "text": "Keep a world online 24/7 on a spare PC or a Linux VPS with server.py, so friends on other networks can join any time." },
+      { "label": "Always up to date", "text": "Updates download in the background and install themselves, on every platform." }
     ],
-    "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open. We're not on the Mac App Store yet, so macOS flags Volatile as coming from an unidentified developer; if it's still blocked, open System Settings, then Privacy & Security, and click Open Anyway. The first launch takes a minute or two while macOS prepares the graphics. Android: open the APK on your phone and allow the install. Every version updates itself from the main menu.",
+    "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open. We're not on the Mac App Store yet, so macOS flags Volatile as coming from an unidentified developer; if it's still blocked, open System Settings, then Privacy & Security, and click Open Anyway. The first launch takes a minute or two while macOS prepares the graphics. Android: open the APK on your phone and allow the install. Volatile updates itself automatically. To host a world that stays online, run server.py (it's in the Windows download, and the Linux server download is made for a VPS), then share the join code it prints. Stuck or found a bug? Use Support in the game's menu.",
     "link": { "label": "Download for Windows (83 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
     "more": [
       { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
-      { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" }
+      { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
+      { "label": "Dedicated server for Linux (28 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip", "minor": true }
     ],
     "visual": "shot",
     "image": "/files/volatile-factory.jpg",
@@ -61,7 +66,135 @@ window.VORTAL_PRODUCTS = [
       { "src": "/files/volatile-boss.jpg", "caption": "The Matriarch and the Warden Mk.IX" },
       { "src": "/files/volatile-tablet.jpg", "caption": "The field datapad: map, story log and a built-in wiki" }
     ],
-    "caption": "The first factory: drill → smelter → constructor, powered from the Directive Terminal"
+    "caption": "The first factory: drill → smelter → constructor, powered from the Directive Terminal",
+    "hosting": {
+      "title": "Host a server",
+      "lede": "Keep a Volatile world online around the clock, so friends can join from anywhere, even when you're not playing. The server runs the game without a screen and all 8 player slots are for people who join. It restarts itself if it crashes, saves every 5 minutes, and updates itself when a new version comes out (warning everyone a minute before).",
+      "options": [
+        {
+          "name": "On a Windows PC",
+          "tag": "Easiest",
+          "steps": [
+            {
+              "text": "Download Volatile for Windows and unzip it."
+            },
+            {
+              "text": "Double-click Start server.bat in the game folder. With Python 3 installed you get auto-restart, auto-update and a console; without it, a basic server still runs."
+            },
+            {
+              "text": "It prints a join code. Send it to your friends: they open Join Co-op and paste it."
+            },
+            {
+              "text": "If it says your router didn't open the port, forward UDP 7777 to this PC in your router's settings (or use a VPS instead)."
+            }
+          ],
+          "link": {
+            "label": "Download for Windows (83 MB)",
+            "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip"
+          }
+        },
+        {
+          "name": "On a Linux VPS",
+          "tag": "Always online",
+          "steps": [
+            {
+              "text": "Any small Linux VPS works: about 1 GB of memory is plenty, 2 GB for a busy 8-player world. Download the server and unzip it.",
+              "code": "wget -O volatile.zip \"https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip\"\nunzip volatile.zip -d volatile && cd volatile"
+            },
+            {
+              "text": "Open the game's port in the firewall (UDP, not TCP). Many hosts also have a firewall in their control panel.",
+              "code": "sudo ufw allow 7777/udp"
+            },
+            {
+              "text": "Start it. The world is made the first time and loaded after that.",
+              "code": "python3 server.py --world \"My world\" --name \"My server\""
+            },
+            {
+              "text": "Keep it running after you log out (or run it inside screen or tmux):",
+              "code": "nohup python3 server.py > server.log 2>&1 &"
+            }
+          ],
+          "link": {
+            "label": "Dedicated server for Linux (28 MB)",
+            "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip"
+          }
+        }
+      ],
+      "commands": [
+        [
+          "players",
+          "who's online, their device and ping"
+        ],
+        [
+          "say <message>",
+          "a message to everyone in the game"
+        ],
+        [
+          "kick <name>",
+          "remove a player"
+        ],
+        [
+          "save",
+          "save the world now"
+        ],
+        [
+          "status",
+          "world, tier, version, join code and uptime"
+        ],
+        [
+          "update",
+          "check for a new version and install it"
+        ],
+        [
+          "restart",
+          "restart the server"
+        ],
+        [
+          "stop",
+          "save and shut down (Ctrl+C does the same)"
+        ]
+      ],
+      "flags": [
+        [
+          "--world NAME",
+          "which world to host (made if it doesn't exist)"
+        ],
+        [
+          "--port 7777",
+          "the UDP port"
+        ],
+        [
+          "--seed 1234",
+          "the map seed for a new world"
+        ],
+        [
+          "--name NAME",
+          "the server name shown in Join Co-op on the same network"
+        ],
+        [
+          "--no-update",
+          "don't update the game automatically"
+        ]
+      ],
+      "faq": [
+        {
+          "q": "My friends can't connect.",
+          "a": "Check the port is open for UDP (not TCP) both in the server's firewall and, at home, forwarded in your router. Everyone must be on the same version, which the game handles by updating itself. On the same Wi-Fi, the server shows up in Join Co-op without a code."
+        },
+        {
+          "q": "Can I host from a Mac?",
+          "a": "Yes: run python3 server.py --game /Applications/Volatile.app from a folder that has server.py (it's in the Windows and Linux downloads)."
+        },
+        {
+          "q": "Where is the world saved?",
+          "a": "In the game's normal save folder, under the world's name, so you can also open it in the game yourself. On Linux that's ~/.local/share/godot/app_userdata/Volatile/saves."
+        },
+        {
+          "q": "Do I need Python?",
+          "a": "Python 3.8 or newer, with nothing extra to install. Most Linux servers already have it; on Windows, get it from python.org."
+        }
+      ]
+    }
   },
   {
     "id": "cisfactions",

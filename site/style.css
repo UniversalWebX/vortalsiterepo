@@ -857,3 +857,41 @@ body.no-scroll { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .vgal__item img, .vshow__img, .haz-emblem { transition: none; }
 }
+
+/* "Host a server" guide on the Volatile page */
+.vhost { padding: 8px 0 72px; scroll-margin-top: 90px; }
+.vhost > .section-head { display: block; }
+.vhost > .section-head h2 { margin-top: 8px; }
+.vcode::before { content: "shell"; position: absolute; top: 9px; left: 12px; font: 600 10px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.vhost__lede { max-width: 72ch; margin: 0 0 26px; font-size: 16.5px; line-height: 1.6; color: var(--dim); }
+.vhost__options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px; }
+.vhost__card { position: relative; padding: 22px 22px 24px; border: 1px solid rgba(242, 158, 46, .3); background: linear-gradient(180deg, rgba(242, 158, 46, .06), rgba(20, 14, 9, .5)); display: flex; flex-direction: column; min-width: 0; }
+.vhost__card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--haz-stripes); }
+.vhost__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.vhost__head h3 { margin: 0; font: 600 20px/1.2 var(--display); color: var(--haz-hi); }
+.vhost__steps { margin: 0 0 18px; padding: 0; list-style: none; counter-reset: vstep; display: grid; gap: 14px; }
+.vhost__steps li { counter-increment: vstep; position: relative; padding-left: 38px; min-width: 0; }
+.vhost__steps li::before { content: counter(vstep); position: absolute; left: 0; top: 0; width: 26px; height: 26px; display: grid; place-items: center; background: var(--haz); color: #120D08; font: 700 13px/1 var(--mono); }
+.vhost__steps p { margin: 2px 0 0; line-height: 1.55; }
+.vcode { position: relative; margin-top: 8px; border: 1px solid var(--line); background: #0c0906; }
+.vcode pre { margin: 0; padding: 34px 12px 12px; overflow-x: auto; font: 500 13px/1.55 var(--mono); color: var(--haz-hi); white-space: pre; }
+.vcode__copy { position: absolute; top: 5px; right: 5px; padding: 5px 10px; border: 1px solid rgba(242, 158, 46, .45); background: rgba(18, 13, 8, .9); color: var(--haz-hi); font: 600 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.vcode__copy:hover { background: var(--haz); color: #120D08; }
+.vhost__dl { margin-top: auto; align-self: flex-start; }
+.vhost__ref { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 36px; margin-top: 36px; }
+.vhost__ref h3, .vhost__faq h3 { margin: 0 0 4px; font: 600 18px/1.3 var(--display); }
+.vhost__small { margin: 0 0 12px; font-size: 14px; color: var(--faint); }
+.vhost__kv { margin: 0; display: grid; gap: 2px; }
+.vhost__kv > div { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.vhost__kv dt code, .vhost__small code { font: 600 13px/1.4 var(--mono); color: var(--haz-hi); }
+.vhost__kv dd { margin: 0; color: var(--dim); line-height: 1.45; }
+.vhost__faq { margin-top: 32px; display: grid; gap: 8px; }
+.vhost__faq details { border: 1px solid var(--line); background: rgba(255, 255, 255, .02); padding: 0 16px; }
+.vhost__faq summary { padding: 14px 0; cursor: pointer; font-weight: 600; }
+.vhost__faq details[open] summary { color: var(--haz-hi); }
+.vhost__faq details p { margin: 0 0 14px; color: var(--dim); line-height: 1.55; }
+.vhero__small a { color: var(--haz-hi); }
+@media (max-width: 600px) {
+  .vhost__kv > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .vhost__card { padding: 18px 16px 20px; }
+}

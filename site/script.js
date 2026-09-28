@@ -212,6 +212,7 @@
           <header class="section-head section-head--tight"><h2>Screenshots</h2></header>
           <div class="vgal__grid">${galleryHTML(p.gallery)}</div>
         </section>` : '';
+    const host = p.hosting ? hostingHTML(p.hosting) : '';
     const haz = p.id === 'volatile';
     return `
       <article class="product${haz ? ' product--haz' : ''}" style="--accent:${haz ? '#F29E2E' : V.shadeHex(p.shade)}">
@@ -237,6 +238,7 @@
         </section>
         ${gallery}
         ${body}
+        ${host}
         ${others.length ? `
         <section class="wrap more">
           <header class="section-head">
@@ -247,6 +249,46 @@
         </section>` : ''}
       </article>`;
   }
+
+  /* ---------- "Host a server" guide ---------- */
+  function hostingHTML(h) {
+    const kv = (rows, cls) => rows.length ? `
+          <dl class="vhost__kv ${cls}">${rows.map(r => `<div><dt><code>${esc(r[0])}</code></dt><dd>${esc(r[1])}</dd></div>`).join('')}</dl>` : '';
+    return `
+        <section class="wrap vhost" id="server" aria-labelledby="server-title">
+          <header class="section-head section-head--tight">
+            <p class="eyebrow eyebrow--haz">Dedicated servers</p>
+            <h2 id="server-title">${esc(h.title)}</h2>
+          </header>
+          ${h.lede ? `<p class="vhost__lede">${esc(h.lede)}</p>` : ''}
+          <div class="vhost__options">${h.options.map(o => `
+            <article class="vhost__card">
+              <header class="vhost__head"><h3>${esc(o.name)}</h3>${o.tag ? `<span class="vbadge">${esc(o.tag)}</span>` : ''}</header>
+              <ol class="vhost__steps">${o.steps.map(s => `
+                <li>${s.text ? `<p>${esc(s.text)}</p>` : ''}${s.code ? `
+                  <div class="vcode"><pre><code>${esc(s.code)}</code></pre><button class="vcode__copy" type="button" data-copy="${esc(s.code)}">Copy</button></div>` : ''}</li>`).join('')}
+              </ol>
+              ${o.link.url ? `<a class="btn btn--line btn--line-haz vhost__dl" href="${esc(o.link.url)}" target="_blank" rel="noopener">${esc(o.link.label)} <span aria-hidden="true">&#8595;</span></a>` : ''}
+            </article>`).join('')}
+          </div>
+          ${h.commands.length || h.flags.length ? `
+          <div class="vhost__ref">
+            ${h.commands.length ? `<div><h3>Console commands</h3><p class="vhost__small">Type these into the server window while it runs.</p>${kv(h.commands, 'vhost__kv--cmd')}</div>` : ''}
+            ${h.flags.length ? `<div><h3>Options</h3><p class="vhost__small">Add them after <code>python3 server.py</code>.</p>${kv(h.flags, 'vhost__kv--flag')}</div>` : ''}
+          </div>` : ''}
+          ${h.faq.length ? `
+          <div class="vhost__faq"><h3>Common questions</h3>${h.faq.map(f => `
+            <details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}
+          </div>` : ''}
+        </section>`;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.vcode__copy');
+    if (!b) return;
+    const done = ok => { b.textContent = ok ? 'Copied' : 'Select it and copy'; setTimeout(() => { b.textContent = 'Copy'; }, 1600); };
+    if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(() => done(true), () => done(false));
+    else done(false);
+  });
 
   function galleryHTML(list) {
     return list.map((g, i) => `
@@ -427,6 +469,11 @@
     } else {
       page.innerHTML = current ? productPageHTML(current) : missingHTML();
       if (current) shots = current.gallery;
+      // /volatile#server: jump to the hosting guide once it's on the page
+      if (current && location.hash.length > 1) {
+        const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        if (target) requestAnimationFrame(() => target.scrollIntoView());
+      }
       document.title = current ? `${current.name} · Vortal` : 'Page not found · Vortal';
       if (current && current.summary && desc) desc.setAttribute('content', current.summary);
     }
@@ -436,7 +483,7 @@
       shots = star.gallery.length ? star.gallery : [{ src: star.image, caption: star.caption }];
       const badges = [star.kind, ...(star.spec ? star.spec.split('·').map(s => s.trim()).filter(Boolean) : [])];
       document.getElementById('vhero-badges').innerHTML = badges.map((b, i) => `<span class="${i === 0 ? 'vbadge vbadge--hot' : 'vbadge'}">${esc(b)}</span>`).join('');
-      const dl = [star.link, ...star.more].filter(l => V.safeUrl(l.url));
+      const dl = [star.link, ...star.more].filter(l => V.safeUrl(l.url) && !l.minor);   // minor links (e.g. the server) stay on the product page
       document.getElementById('vhero-cta').innerHTML = dl.map((l, i) =>
         `<a class="btn ${i === 0 ? 'btn--haz' : 'btn--line btn--line-haz'}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} <span aria-hidden="true">&#8595;</span></a>`).join('') +
         `<a class="btn btn--line btn--line-haz" href="${href(star)}">Details</a>`;

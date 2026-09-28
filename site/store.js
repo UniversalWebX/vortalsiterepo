@@ -56,7 +56,7 @@
       features: Array.isArray(p.features) ? p.features.map(f => ({ label: str(f && f.label), text: str(f && f.text) })) : [],
       note: str(p.note),
       link: { label: str(link.label), url: str(link.url) },
-      more: Array.isArray(p.more) ? p.more.map(m => ({ label: str(m && m.label), url: str(m && m.url) })).filter(m => m.url) : [],
+      more: Array.isArray(p.more) ? p.more.map(m => ({ label: str(m && m.label), url: str(m && m.url), minor: !!(m && m.minor) })).filter(m => m.url) : [],
       source: str(p.source),
       guide: { label: str((p.guide || {}).label), url: str((p.guide || {}).url) },
       visual: VISUALS[p.visual] ? p.visual : 'icon',
@@ -65,6 +65,26 @@
       caption: str(p.caption),
       spotlight: p.spotlight === true,
       gallery: Array.isArray(p.gallery) ? p.gallery.map(g => ({ src: safeUrl(str(g && g.src)), caption: str(g && g.caption) })).filter(g => g.src) : [],
+      hosting: hosting(p.hosting, str),
+    };
+  }
+
+  // The optional "host a server" guide; anything malformed is dropped.
+  function hosting(h, str) {
+    if (!h || typeof h !== 'object') return null;
+    const arr = v => (Array.isArray(v) ? v : []);
+    const pairs = v => arr(v).filter(Array.isArray).map(r => [str(r[0]), str(r[1])]).filter(r => r[0]);
+    return {
+      title: str(h.title) || 'Host a server',
+      lede: str(h.lede),
+      options: arr(h.options).map(o => ({
+        name: str(o && o.name), tag: str(o && o.tag),
+        steps: arr(o && o.steps).map(s => ({ text: str(s && s.text), code: str(s && s.code) })).filter(s => s.text || s.code),
+        link: { label: str(((o || {}).link || {}).label), url: safeUrl(str(((o || {}).link || {}).url)) },
+      })).filter(o => o.name && o.steps.length),
+      commands: pairs(h.commands),
+      flags: pairs(h.flags),
+      faq: arr(h.faq).map(f => ({ q: str(f && f.q), a: str(f && f.a) })).filter(f => f.q && f.a),
     };
   }
 
