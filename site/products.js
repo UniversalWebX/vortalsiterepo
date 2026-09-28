@@ -91,7 +91,7 @@ window.VORTAL_PRODUCTS = [
             }
           ],
           "link": {
-            "label": "Download for Windows (83 MB)",
+            "label": "Download for Windows (37 MB)",
             "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip"
           }
         },
