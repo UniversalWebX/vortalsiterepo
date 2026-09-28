@@ -35,7 +35,7 @@ window.VORTAL_PRODUCTS = [
     "kind": "PC, Mac & Android",
     "status": "released",
     "shade": "plum",
-    "spec": "Update 1 Beta · Windows · Mac · Android · crossplay co-op for up to 8",
+    "spec": "1.0 · Windows · Mac · Android · crossplay co-op for up to 8",
     "summary": "A co-op factory builder in a toxic wasteland. Humanity is gone, production isn't: scavenge, build drills, smelters and conveyor lines, and push the last working machine through five directives.",
     "features": [
       { "label": "Automate", "text": "Drill → Smelt → Construct → Store" },
@@ -43,7 +43,10 @@ window.VORTAL_PRODUCTS = [
       { "label": "A 10 km wasteland", "text": "Ruined cities and meltdown sites near home, richer ore and meaner mutants the further you travel." },
       { "label": "Survive", "text": "Toxic storms, radiation, mutant packs, and two bosses: the Matriarch and the Warden Mk.IX." },
       { "label": "Crossplay co-op", "text": "Up to 8 players on PC, Mac and Android together, with join codes, proximity voice chat, emotes, and shared worlds." },
-      { "label": "Update 1 Beta", "text": "Belts pathfind around trees and tunnel through hills, a built-in wiki (F1), icons for every building, and voice chat that no longer lags." },
+      { "label": "Easier automation", "text": "Machines pick their own recipe from what arrives, Belt Filters split outputs, and belts pathfind around trees and tunnel through hills." },
+      { "label": "Vortal accounts", "text": "One free account for online play: your name can't be faked, and your items follow you between devices. Solo needs none." },
+      { "label": "Fair play", "text": "The host checks every build, delivery and trade against what you really have, and moderators can kick, mute and ban." },
+      { "label": "Public servers", "text": "Find public games and dedicated servers right in Join Co-op, or list your own." },
       { "label": "Dedicated servers", "text": "Keep a world online 24/7 on a spare PC or a Linux VPS with server.py, so friends on other networks can join any time." },
       { "label": "Always up to date", "text": "Updates download in the background and install themselves, on every platform." },
       { "label": "Skip the night", "text": "Sleep through the dark in a few seconds; in co-op, everyone votes." },
@@ -174,6 +177,10 @@ window.VORTAL_PRODUCTS = [
           "the server name shown in Join Co-op on the same network"
         ],
         [
+          "--public",
+          "list it on the public server list in Join Co-op"
+        ],
+        [
           "--no-update",
           "don't update the game automatically"
         ]
@@ -190,6 +197,14 @@ window.VORTAL_PRODUCTS = [
         {
           "q": "Where is the world saved?",
           "a": "In the game's normal save folder, under the world's name, so you can also open it in the game yourself. On Linux that's ~/.local/share/godot/app_userdata/Volatile/saves."
+        },
+        {
+          "q": "How do people find my server?",
+          "a": "Start it with --public and it shows up under Public servers in everyone's Join Co-op. Otherwise share the join code it prints. Players need a free Vortal account to play online (vortal.space/account)."
+        },
+        {
+          "q": "How do I moderate it?",
+          "a": "Type ban, kick, mute, warn or announce in the server window (players, say and status too). World bans are saved with the world."
         },
         {
           "q": "Do I need Python?",

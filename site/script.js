@@ -166,7 +166,7 @@
     const haz = p.id === 'volatile';
     return `
       <a class="pcard${haz ? ' pcard--haz' : ''}" href="${href(p)}" style="--accent:${haz ? '#F29E2E' : V.shadeHex(p.shade)}">
-        ${haz ? '<span class="haz-ribbon">Update 1 Beta</span>' : ''}
+        ${haz ? '<span class="haz-ribbon">Version 1.0</span>' : ''}
         <div class="pcard__media">${visualArt(p)}${haz ? '<img class="haz-emblem" src="/files/volatile-emblem.png" alt="" aria-hidden="true">' : ''}</div>
         <div class="pcard__body">
           <div class="release__tags"><span class="tag">${esc(p.kind || cat(p).label)}</span>${statusPill(p)}</div>
@@ -460,7 +460,11 @@
     document.documentElement.dataset.route = 'page';
     const page = document.getElementById('page');
     const desc = document.querySelector('meta[name="description"]');
-    if (route === 'contact') {
+    if (route === 'account' && window.VortalAccount) {
+      document.title = 'Account · Vortal';
+      if (desc) desc.setAttribute('content', 'Your Vortal account: sign in, create an account, manage it.');
+      window.VortalAccount.render(page);
+    } else if (route === 'contact') {
       page.innerHTML = contactPageHTML();
       document.title = 'Contact · Vortal';
       if (desc) desc.setAttribute('content', 'Send Vortal a message: questions, bug reports, partnerships.');
@@ -558,7 +562,8 @@
 
   document.getElementById('foot-links').innerHTML =
     listed.map(p => `<li><a href="${href(p)}"${p === current ? ' aria-current="page"' : ''}>${esc(p.name)}</a></li>`).join('') +
-    `<li><a href="/contact"${route === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>`;
+    `<li><a href="/contact"${route === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>` +
+    `<li><a href="/account"${route === 'account' ? ' aria-current="page"' : ''}>Account</a></li>`;
 
   /* ---------- Products dropdown ---------- */
   const menuBtn = document.getElementById('menu-btn');

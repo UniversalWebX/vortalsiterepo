@@ -895,3 +895,22 @@ body.no-scroll { overflow: hidden; }
   .vhost__kv > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .vhost__card { padding: 18px 16px 20px; }
 }
+
+/* vortal.space/account */
+.acct__row { display: flex; flex-wrap: wrap; gap: 10px; }
+.acct__small { margin: 0; font-size: 14px; line-height: 1.5; color: var(--faint); }
+.acct__note { margin: 0; padding: 10px 12px; border: 1px solid var(--line); color: var(--dim); }
+.acct__hello { margin: 0 0 4px; font-size: 18px; }
+.acct__mod { margin-left: 6px; }
+.acct__ban { margin: 12px 0 0; padding: 10px 12px; border: 1px solid rgba(255, 90, 90, .5); color: #ff9a9a; }
+.acct__me { display: grid; gap: 8px; margin-bottom: 18px; }
+.acct__box { border-top: 1px solid var(--line); padding: 14px 0; }
+.acct__box summary { cursor: pointer; font-weight: 600; margin-bottom: 12px; }
+.acct__danger { border-color: rgba(255, 90, 90, .6); color: #ff9a9a; }
+.cform__status.is-good { color: var(--dim); }
+.acct__mods { margin-top: 20px; padding-top: 18px; border-top: 2px solid var(--line); display: grid; gap: 12px; }
+.acct__mods h2 { margin: 0; font: 600 22px/1.2 var(--display); }
+.acct__mods h3 { margin: 8px 0 0; font: 600 16px/1.3 var(--display); }
+.acct__table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.acct__table th, .acct__table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+.acct__table th { font: 600 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
