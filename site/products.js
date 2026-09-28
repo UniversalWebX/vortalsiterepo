@@ -45,10 +45,12 @@ window.VORTAL_PRODUCTS = [
       { "label": "Crossplay co-op", "text": "Up to 8 players on PC, Mac and Android together, with join codes, proximity voice chat, emotes, and shared worlds." },
       { "label": "Update 1 Beta", "text": "Belts pathfind around trees and tunnel through hills, a built-in wiki (F1), icons for every building, and voice chat that no longer lags." },
       { "label": "Dedicated servers", "text": "Keep a world online 24/7 on a spare PC or a Linux VPS with server.py, so friends on other networks can join any time." },
-      { "label": "Always up to date", "text": "Updates download in the background and install themselves, on every platform." }
+      { "label": "Always up to date", "text": "Updates download in the background and install themselves, on every platform." },
+      { "label": "Skip the night", "text": "Sleep through the dark in a few seconds; in co-op, everyone votes." },
+      { "label": "Runs on laptops", "text": "A big performance pass: about a third fewer draw calls, cheaper shadows and faster loading, tuned on integrated graphics." }
     ],
     "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open. We're not on the Mac App Store yet, so macOS flags Volatile as coming from an unidentified developer; if it's still blocked, open System Settings, then Privacy & Security, and click Open Anyway. The first launch takes a minute or two while macOS prepares the graphics. Android: open the APK on your phone and allow the install. Volatile updates itself automatically. To host a world that stays online, run server.py (it's in the Windows download, and the Linux server download is made for a VPS), then share the join code it prints. Stuck or found a bug? Use Support in the game's menu.",
-    "link": { "label": "Download for Windows (83 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
+    "link": { "label": "Download for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
     "more": [
       { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
       { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
