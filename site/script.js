@@ -3,6 +3,63 @@
   const esc = V.esc;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ---------- Volatile 1.0 countdown ----------
+     Counts down to the release; the glow moves to a new shade of yellow or
+     green every hour (the same shade for everyone during that hour). */
+  const RELEASE = Date.parse('2026-10-01T17:30:00-07:00');   // October 1, 5:30 PM Pacific
+  const GLOWS = ['#FFD84A', '#B8F03C', '#F2C230', '#8BE04E', '#FFE873', '#6FD66A',
+    '#E8D23A', '#A4F07A', '#FFC940', '#55E07A', '#D9F24A', '#C8E83A'];
+  const COUNT_HTML = `<div class="vcount" data-countdown hidden>
+            <p class="vcount__label"><span class="vcount__dot" aria-hidden="true"></span>Volatile 1.0 · official release</p>
+            <div class="vcount__time" role="timer" aria-live="off">
+              <span class="vcount__unit"><b data-u="d">0</b><i>days</i></span>
+              <span class="vcount__unit"><b data-u="h">00</b><i>hours</i></span>
+              <span class="vcount__unit"><b data-u="m">00</b><i>minutes</i></span>
+              <span class="vcount__unit"><b data-u="s">00</b><i>seconds</i></span>
+            </div>
+            <p class="vcount__when" data-when></p>
+          </div>`;
+  function mountCountdowns(root) {
+    root.querySelectorAll('[data-countdown]').forEach(el => {
+      if (el.dataset.live) return;
+      el.dataset.live = '1';
+      el.hidden = false;
+      const when = el.querySelector('[data-when]');
+      if (when) {
+        const local = new Date(RELEASE).toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+        const pacific = new Date(RELEASE).getTimezoneOffset() === 420;   // the visitor is on Pacific time too
+        when.textContent = pacific ? 'Thursday, October 1 · 5:30 PM Pacific' : `October 1 · 5:30 PM Pacific  ·  ${local} where you are`;
+      }
+      const set = (u, v) => { const b = el.querySelector(`[data-u="${u}"]`); if (b && b.textContent !== v) b.textContent = v; };
+      let hour = -1;
+      const tick = () => {
+        const now = Date.now();
+        const h = Math.floor(now / 3600000);
+        if (h !== hour) {
+          hour = h;
+          el.style.setProperty('--glow', GLOWS[h % GLOWS.length]);
+        }
+        let left = Math.max(0, RELEASE - now);
+        if (left <= 0) {
+          el.classList.add('is-out');
+          el.querySelector('.vcount__label').lastChild.textContent = 'Volatile 1.0 is out now';
+          el.querySelector('.vcount__time').hidden = true;
+          return;
+        }
+        const d = Math.floor(left / 86400000); left -= d * 86400000;
+        const hh = Math.floor(left / 3600000); left -= hh * 3600000;
+        const mm = Math.floor(left / 60000); left -= mm * 60000;
+        const ss = Math.floor(left / 1000);
+        set('d', String(d));
+        set('h', String(hh).padStart(2, '0'));
+        set('m', String(mm).padStart(2, '0'));
+        set('s', String(ss).padStart(2, '0'));
+        setTimeout(tick, 1000 - (now % 1000) + 5);
+      };
+      tick();
+    });
+  }
+
   // Small seeded RNG so the pixel art comes out the same on every load.
   function rng(seed) {
     return () => {
@@ -231,6 +288,7 @@
               <h1 class="product__name">${esc(p.name)}</h1>
               ${p.summary ? `<p class="product__lede">${esc(p.summary)}</p>` : ''}
               ${actionsHTML(p)}
+              ${p.id === 'volatile' ? COUNT_HTML : ''}
               <p class="product__ask">Questions about ${esc(p.name)}? <a href="/contact?topic=${encodeURIComponent(p.name)}">Send us a message</a></p>
             </div>
             ${visualHTML(p)}
@@ -826,4 +884,5 @@
         io.observe(el);
       });
   }
+  mountCountdowns(document);
 })();

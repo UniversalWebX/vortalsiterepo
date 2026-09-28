@@ -895,3 +895,39 @@ body.no-scroll { overflow: hidden; }
   .vhost__kv > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .vhost__card { padding: 18px 16px 20px; }
 }
+
+/* Volatile 1.0 countdown: the glow is a new yellow/green shade every hour (--glow, set by script.js) */
+.vcount {
+  --glow: #FFD84A;
+  margin-top: 22px; padding: 16px 18px 14px; max-width: 520px;
+  border: 1px solid color-mix(in srgb, var(--glow) 55%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--glow) 9%, transparent), rgba(10, 8, 6, .6));
+  box-shadow: 0 0 22px color-mix(in srgb, var(--glow) 35%, transparent), inset 0 0 18px color-mix(in srgb, var(--glow) 10%, transparent);
+  transition: border-color 2s ease, box-shadow 2s ease, background 2s ease;
+  animation: vcount-breathe 3.2s ease-in-out infinite;
+}
+.vcount__label { margin: 0 0 10px; display: flex; align-items: center; gap: 8px; font: 700 12px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--glow); transition: color 2s ease; }
+.vcount__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 10px var(--glow); animation: vcount-dot 1s ease-in-out infinite alternate; }
+.vcount__time { display: flex; gap: 10px; flex-wrap: wrap; }
+.vcount__unit { display: grid; justify-items: center; min-width: 76px; padding: 8px 6px 6px; border: 1px solid color-mix(in srgb, var(--glow) 30%, transparent); background: rgba(8, 6, 4, .55); }
+.vcount__unit b {
+  font: 700 38px/1 var(--display); color: #fff; font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 12px var(--glow), 0 0 28px color-mix(in srgb, var(--glow) 60%, transparent);
+  transition: text-shadow 2s ease;
+}
+.vcount__unit i { margin-top: 6px; font: 600 10px/1 var(--mono); font-style: normal; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.vcount__when { margin: 10px 0 0; font: 500 12.5px/1.45 var(--mono); color: var(--dim); }
+.vcount.is-out .vcount__label { font-size: 15px; }
+.product-hero .vcount { margin-top: 26px; }
+@keyframes vcount-breathe {
+  0%, 100% { box-shadow: 0 0 18px color-mix(in srgb, var(--glow) 28%, transparent), inset 0 0 14px color-mix(in srgb, var(--glow) 8%, transparent); }
+  50% { box-shadow: 0 0 34px color-mix(in srgb, var(--glow) 50%, transparent), inset 0 0 22px color-mix(in srgb, var(--glow) 14%, transparent); }
+}
+@keyframes vcount-dot { from { opacity: .45; } to { opacity: 1; } }
+@media (max-width: 600px) {
+  .vcount__unit { min-width: 0; flex: 1 1 0; }
+  .vcount__unit b { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vcount, .vcount__dot { animation: none; }
+}
