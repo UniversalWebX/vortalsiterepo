@@ -957,4 +957,50 @@
       });
   }
   mountCountdowns(document);
+
+  /* ---------- The last 24 hours before 1.0: downloads pause ----------
+     Every Volatile download link (they all point at the volatile-download
+     branch) is switched off with a note, and back on at the launch, when the
+     page reloads to show the official release. */
+  const DL = 'a[href*="/volatile-download/"]';
+  function applyDownloadPause() {
+    const paused = V.downloadsPaused();
+    document.querySelectorAll(DL + ', a[data-paused-href]').forEach(a => {
+      if (paused && !a.dataset.pausedHref) {
+        a.dataset.pausedHref = a.getAttribute('href');
+        a.removeAttribute('href');
+        a.setAttribute('aria-disabled', 'true');
+        a.classList.add('is-paused');
+        a.title = 'Downloads are back when Volatile 1.0 comes out';
+      } else if (!paused && a.dataset.pausedHref) {
+        a.setAttribute('href', a.dataset.pausedHref);
+        delete a.dataset.pausedHref;
+        a.removeAttribute('aria-disabled');
+        a.classList.remove('is-paused');
+        a.removeAttribute('title');
+      }
+    });
+    document.querySelectorAll('.dl-paused').forEach(n => n.remove());
+    if (!paused) return;
+    const when = new Date(RELEASE).toLocaleString(undefined, { weekday: 'long', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+    const note = full => {
+      const p = document.createElement('p');
+      p.className = full ? 'dl-paused' : 'dl-paused dl-paused--short';
+      if (full) p.setAttribute('role', 'status');
+      p.innerHTML = full
+        ? `<b>Downloads are paused for the final 24 hours.</b> They're back ${esc(when)} with the official release of Volatile 1.0.`
+        : `<b>Paused until launch</b> · back ${esc(when)}`;
+      return p;
+    };
+    // the full note above the first group of download buttons, a short one above the rest
+    const groups = new Set();
+    document.querySelectorAll('a[data-paused-href]').forEach(a => groups.add(a.parentElement));
+    [...groups].forEach((g, i) => g.parentElement.insertBefore(note(i === 0), g));
+  }
+  applyDownloadPause();
+  const untilFreeze = V.FREEZE - Date.now();
+  const untilRelease = RELEASE - Date.now();
+  if (untilFreeze > 0 && untilFreeze < 2147483647) setTimeout(applyDownloadPause, untilFreeze + 500);
+  // at the launch, reload once so the official downloads and copy show up
+  if (untilRelease > 0 && untilRelease < 2147483647) setTimeout(() => location.reload(), untilRelease + 1500);
 })();

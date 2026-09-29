@@ -93,6 +93,10 @@
   // shows the beta; after it, each product's "launch" overrides apply.
   const RELEASE = Date.parse('2026-10-01T17:30:00-07:00');
   const released = () => Date.now() >= RELEASE;
+  // Downloads pause for the last 24 hours before the launch (no one grabs the
+  // old beta at the last minute) and come back with 1.0.
+  const FREEZE = RELEASE - 24 * 3600e3;
+  const downloadsPaused = () => Date.now() >= FREEZE && Date.now() < RELEASE;
   function launched(p) {
     const l = p && p.launch;
     if (!l || typeof l !== 'object' || !released()) return p;
@@ -132,5 +136,5 @@
   }
   const paintIcons = (root = document) => root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = iconSVG(el.dataset.icon); });
 
-  window.Vortal = { SHADES, CATEGORIES, STATUSES, RELEASE, released, esc, safeUrl, shadeHex, products, paintIcons };
+  window.Vortal = { SHADES, CATEGORIES, STATUSES, RELEASE, FREEZE, released, downloadsPaused, esc, safeUrl, shadeHex, products, paintIcons };
 })();

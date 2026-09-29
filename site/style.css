@@ -1036,3 +1036,13 @@ body.no-scroll { overflow: hidden; }
 .vcom__mod summary { cursor: pointer; font-weight: 600; font-size: 14px; }
 .vcom__mod .cform { margin-top: 10px; }
 .vcom__check { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--dim); }
+
+/* Downloads paused in the last 24 hours before 1.0 (script.js) */
+a.is-paused { opacity: .45; cursor: not-allowed; pointer-events: none; filter: grayscale(.6); }
+.dl-paused {
+  margin: 18px 0 0; padding: 10px 14px; max-width: 560px; border: 1px solid var(--haz); background: rgba(242, 158, 46, .08);
+  font-size: 14px; line-height: 1.5; color: var(--text);
+}
+.dl-paused b { color: var(--haz-hi); }
+.vhost .dl-paused { margin: 0 0 10px; }
+.dl-paused--short { padding: 6px 10px; font-size: 12.5px; }
