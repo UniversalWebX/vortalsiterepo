@@ -786,6 +786,31 @@ body.no-scroll { overflow: hidden; }
 .vshow__dot[aria-selected="true"] { background: var(--haz); }
 
 /* gallery */
+/* Videos: a thumbnail until played, then the YouTube player in place */
+.vvids { padding: 72px 0 0; }
+.vvids--page { padding: 48px 0 0; }
+.vvids__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px; }
+.vvid { margin: 0; }
+.vvid__play, .vvid__frame {
+  position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--line); background: #120D08 center / cover no-repeat;
+}
+.vvid__play { padding: 0; cursor: pointer; overflow: hidden; }
+.vvid__play::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--haz-stripes); opacity: 0; transition: opacity .2s; }
+.vvid__play::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(8, 6, 4, .55)); }
+.vvid__play:hover, .vvid__play:focus-visible { border-color: var(--haz); }
+.vvid__play:hover::before, .vvid__play:focus-visible::before { opacity: 1; }
+.vvid__icon {
+  position: absolute; left: 50%; top: 50%; width: 72px; height: 50px; transform: translate(-50%, -50%); z-index: 1;
+  background: var(--haz); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); border-radius: 12px; transition: transform .2s, background .2s;
+}
+.vvid__icon::after { content: ""; position: absolute; left: 29px; top: 14px; border-style: solid; border-width: 11px 0 11px 19px; border-color: transparent transparent transparent #120D08; }
+.vvid__play:hover .vvid__icon { transform: translate(-50%, -50%) scale(1.08); background: var(--haz-hi); }
+.vvid__badge {
+  position: absolute; left: 12px; top: 14px; z-index: 1; padding: 6px 10px; background: rgba(8, 6, 4, .85); border: 1px solid var(--haz);
+  font: 600 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--haz-hi);
+}
+.vvid__cap { margin-top: 10px; font: 500 14px/1.4 var(--body); color: var(--dim); }
+
 .vgal { padding: 72px 0 8px; }
 .vgal--page { padding: 48px 0 0; }
 .vgal__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); gap: 14px; margin-bottom: 72px; }

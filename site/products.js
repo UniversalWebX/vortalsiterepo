@@ -14,6 +14,9 @@
     note      Extra line (optional). Wrap a key in backticks for a keycap: `K`
     link      { "label": "...", "url": "https://..." }. Leave url empty for no button.
     more      More download buttons, e.g. other platforms: [{ "label": "...", "url": "..." }] (optional)
+    videos    YouTube videos for the product page: [{ "id": "11-char id", "title": "...", "premiere": "ISO time" }] (optional)
+    launch    Fields that replace these ones once Volatile 1.0 is out (Oct 1, 5:30 PM Pacific), e.g. the
+              official download labels; "drop_features" lists feature labels to hide then (optional)
               Add "minor": true to keep a button off the home-page hero (it still shows on the product page).
     hosting   A "host a server" guide on the product page (optional): { title, lede, options: [{ name, tag, steps: [{ text, code }], link }],
               commands: [[command, what it does]], flags: [[flag, what it does]], faq: [{ q, a }] }. Linked as /<id>#server.
@@ -50,12 +53,26 @@ window.VORTAL_PRODUCTS = [
       { "label": "Runs on laptops", "text": "A big performance pass: about a third fewer draw calls, cheaper shadows and faster loading, tuned on integrated graphics." }
     ],
     "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open. We're not on the Mac App Store yet, so macOS flags Volatile as coming from an unidentified developer; if it's still blocked, open System Settings, then Privacy & Security, and click Open Anyway. The first launch takes a minute or two while macOS prepares the graphics. Android: open the APK on your phone and allow the install. Volatile updates itself automatically. To host a world that stays online, run server.py (it's in the Windows download, and the Linux server download is made for a VPS), then share the join code it prints. Stuck or found a bug? Use Support in the game's menu.",
-    "link": { "label": "Download for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
+    "link": { "label": "Download beta for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
     "more": [
-      { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
-      { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
-      { "label": "Dedicated server for Linux (28 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip", "minor": true }
+      { "label": "Download beta for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
+      { "label": "Download beta for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
+      { "label": "Beta dedicated server for Linux (28 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip", "minor": true }
     ],
+    "videos": [
+      { "id": "q5fXmP55Ewk", "title": "Volatile: official trailer", "premiere": "2026-09-28T18:30:00-07:00" },
+      { "id": "e6bSVCToKPc", "title": "Volatile 1.0 gameplay test" }
+    ],
+    "launch": {
+      "spec": "1.0 · Windows · Mac · Android · crossplay co-op for up to 8",
+      "drop_features": ["Update 1 Beta"],
+      "link": { "label": "Download for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
+      "more": [
+        { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
+        { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
+        { "label": "Dedicated server for Linux (28 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip", "minor": true }
+      ]
+    },
     "visual": "shot",
     "image": "/files/volatile-factory.jpg",
     "spotlight": true,

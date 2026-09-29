@@ -6,7 +6,7 @@
   /* ---------- Volatile 1.0 countdown ----------
      Counts down to the release; the glow moves to a new shade of yellow or
      green every hour (the same shade for everyone during that hour). */
-  const RELEASE = Date.parse('2026-10-01T17:30:00-07:00');   // October 1, 5:30 PM Pacific
+  const RELEASE = V.RELEASE;   // October 1, 5:30 PM Pacific (store.js)
   const GLOWS = ['#FFD84A', '#B8F03C', '#F2C230', '#8BE04E', '#FFE873', '#6FD66A',
     '#E8D23A', '#A4F07A', '#FFC940', '#55E07A', '#D9F24A', '#C8E83A'];
   const COUNT_HTML = `<div class="vcount" data-countdown hidden>
@@ -223,7 +223,7 @@
     const haz = p.id === 'volatile';
     return `
       <a class="pcard${haz ? ' pcard--haz' : ''}" href="${href(p)}" style="--accent:${haz ? '#F29E2E' : V.shadeHex(p.shade)}">
-        ${haz ? '<span class="haz-ribbon">Update 1 Beta</span>' : ''}
+        ${haz ? `<span class="haz-ribbon">${V.released() ? 'Version 1.0' : 'Update 1 Beta'}</span>` : ''}
         <div class="pcard__media">${visualArt(p)}${haz ? '<img class="haz-emblem" src="/files/volatile-emblem.png" alt="" aria-hidden="true">' : ''}</div>
         <div class="pcard__body">
           <div class="release__tags"><span class="tag">${esc(p.kind || cat(p).label)}</span>${statusPill(p)}</div>
@@ -249,6 +249,49 @@
       </li>`;
   }
 
+  /* ---------- Videos (YouTube, loaded only when played) ---------- */
+  function premiereText(at) {
+    const d = new Date(at);
+    const time = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    const pacific = d.getTimezoneOffset() === 420;
+    const today = d.toDateString() === new Date().toDateString();
+    const day = today ? 'today' : d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+    return `Premieres ${day} · ${time}${pacific ? ' PT' : ''}`;
+  }
+  function videosHTML(list) {
+    return list.map(v => {
+      const soon = v.premiere && v.premiere > Date.now();
+      return `
+        <figure class="vvid">
+          <button class="vvid__play" type="button" data-yt="${esc(v.id)}" aria-label="Play: ${esc(v.title || 'video')}"
+            style="background-image:url('https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg')">
+            <span class="vvid__icon" aria-hidden="true"></span>
+            ${soon ? `<span class="vvid__badge" data-premiere="${v.premiere}">${esc(premiereText(v.premiere))}</span>` : ''}
+          </button>
+          ${v.title ? `<figcaption class="vvid__cap">${esc(v.title)}</figcaption>` : ''}
+        </figure>`;
+    }).join('');
+  }
+  function wireVideos(root) {
+    root.addEventListener('click', e => {
+      const b = e.target.closest('[data-yt]');
+      if (!b) return;
+      const f = document.createElement('iframe');
+      f.className = 'vvid__frame';
+      f.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(b.dataset.yt)}?autoplay=1&rel=0`;
+      f.title = b.getAttribute('aria-label').replace(/^Play: /, '');
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      f.allowFullscreen = true;
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      b.replaceWith(f);
+    });
+    // the premiere badge goes away when it starts
+    root.querySelectorAll('[data-premiere]').forEach(el => {
+      const left = +el.dataset.premiere - Date.now();
+      if (left < 2147483647) setTimeout(() => el.remove(), Math.max(0, left));
+    });
+  }
+
   function productPageHTML(p) {
     const feats = p.features.filter(f => f.label || f.text);
     const section = p.status === 'soon' ? ['soon', 'Coming soon'] : ['releases', 'Released'];
@@ -270,6 +313,11 @@
           <div class="vgal__grid">${galleryHTML(p.gallery)}</div>
         </section>` : '';
     const host = p.hosting ? hostingHTML(p.hosting) : '';
+    const vids = p.videos.length ? `
+        <section class="wrap vvids vvids--page" id="videos">
+          <header class="section-head section-head--tight"><h2>Videos</h2></header>
+          <div class="vvids__grid">${videosHTML(p.videos)}</div>
+        </section>` : '';
     const haz = p.id === 'volatile';
     return `
       <article class="product${haz ? ' product--haz' : ''}" style="--accent:${haz ? '#F29E2E' : V.shadeHex(p.shade)}">
@@ -294,6 +342,7 @@
             ${visualHTML(p)}
           </div>
         </section>
+        ${vids}
         ${gallery}
         ${body}
         ${host}
@@ -527,6 +576,7 @@
     } else {
       page.innerHTML = current ? productPageHTML(current) : missingHTML();
       if (current) shots = current.gallery;
+      wireVideos(page);
       // /volatile#server: jump to the hosting guide once it's on the page
       if (current && location.hash.length > 1) {
         const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
@@ -546,6 +596,13 @@
         `<a class="btn ${i === 0 ? 'btn--haz' : 'btn--line btn--line-haz'}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} <span aria-hidden="true">&#8595;</span></a>`).join('') +
         `<a class="btn btn--line btn--line-haz" href="${href(star)}">Details</a>`;
       document.getElementById('vgal-grid').innerHTML = galleryHTML(shots);
+      const watch = document.getElementById('watch');
+      if (star.videos.length) {
+        document.getElementById('vvid-grid').innerHTML = videosHTML(star.videos);
+        wireVideos(watch);
+      } else {
+        watch.hidden = true;
+      }
       // hero slideshow
       const img = document.getElementById('vshow-img');
       const cap = document.getElementById('vshow-cap');
@@ -575,6 +632,7 @@
     } else {
       document.getElementById('top').hidden = true;
       document.getElementById('inside').hidden = true;
+      document.getElementById('watch').hidden = true;
     }
     // the spotlight game first, then everything else
     live.sort((a, b) => (b.spotlight === true) - (a.spotlight === true));

@@ -66,6 +66,7 @@
       spotlight: p.spotlight === true,
       gallery: Array.isArray(p.gallery) ? p.gallery.map(g => ({ src: safeUrl(str(g && g.src)), caption: str(g && g.caption) })).filter(g => g.src) : [],
       hosting: hosting(p.hosting, str),
+      videos: videos(p.videos, str),
     };
   }
 
@@ -88,7 +89,30 @@
     };
   }
 
-  const products = () => (Array.isArray(window.VORTAL_PRODUCTS) ? window.VORTAL_PRODUCTS : []).map(normalize);
+  // Volatile 1.0 goes out October 1, 5:30 PM Pacific. Until then the site
+  // shows the beta; after it, each product's "launch" overrides apply.
+  const RELEASE = Date.parse('2026-10-01T17:30:00-07:00');
+  const released = () => Date.now() >= RELEASE;
+  function launched(p) {
+    const l = p && p.launch;
+    if (!l || typeof l !== 'object' || !released()) return p;
+    const out = { ...p, ...l };
+    if (Array.isArray(l.drop_features) && Array.isArray(p.features)) {
+      out.features = (Array.isArray(l.features) ? l.features : p.features).filter(f => !l.drop_features.includes(f && f.label));
+    }
+    return out;
+  }
+
+  // YouTube videos: [{ "id": "...", "title": "...", "premiere": "2026-09-28T18:30:00-07:00" }]
+  function videos(list, str) {
+    return (Array.isArray(list) ? list : []).map(v => ({
+      id: /^[\w-]{11}$/.test(str(v && v.id)) ? v.id : '',
+      title: str(v && v.title),
+      premiere: Date.parse(str(v && v.premiere)) || 0,
+    })).filter(v => v.id);
+  }
+
+  const products = () => (Array.isArray(window.VORTAL_PRODUCTS) ? window.VORTAL_PRODUCTS : []).map(launched).map(normalize);
 
   function iconSVG(name) {
     const rows = ICONS[name] || ICONS.dice;
@@ -101,5 +125,5 @@
   }
   const paintIcons = (root = document) => root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = iconSVG(el.dataset.icon); });
 
-  window.Vortal = { SHADES, CATEGORIES, STATUSES, esc, safeUrl, shadeHex, products, paintIcons };
+  window.Vortal = { SHADES, CATEGORIES, STATUSES, RELEASE, released, esc, safeUrl, shadeHex, products, paintIcons };
 })();
