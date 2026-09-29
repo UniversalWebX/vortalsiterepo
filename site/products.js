@@ -65,7 +65,28 @@ window.VORTAL_PRODUCTS = [
     ],
     "launch": {
       "spec": "1.0 · Windows · Mac · Android · crossplay co-op for up to 8",
-      "drop_features": ["Update 1 Beta"],
+      "features": [
+        { "label": "Automate", "text": "Drill → Smelt → Construct → Store" },
+        { "label": "Worker bots", "text": "Build robots and order them to mine, feed the Terminal, refuel generators, or stand guard." },
+        { "label": "A 10 km wasteland", "text": "Ruined cities and meltdown sites near home, richer ore and meaner mutants the further you travel." },
+        { "label": "Survive", "text": "Toxic storms, radiation, mutant packs, and two bosses: the Matriarch and the Warden Mk.IX." },
+        { "label": "Crossplay co-op", "text": "Up to 8 players on PC, Mac and Android together, with join codes, proximity voice chat, emotes, and shared worlds." },
+        { "label": "Easier automation", "text": "Machines pick their own recipe from what arrives, Belt Filters split outputs, and belts pathfind around trees and tunnel through hills." },
+        { "label": "Vortal accounts", "text": "One free account for online play: your name can't be faked, and your items follow you between devices. Solo needs none." },
+        { "label": "Fair play", "text": "The host checks every build, delivery and trade against what you really have, and moderators can kick, mute and ban." },
+        { "label": "Public servers", "text": "Find public games and dedicated servers right in Join Co-op, or list your own." },
+        { "label": "Dedicated servers", "text": "Keep a world online 24/7 on a spare PC or a Linux VPS with server.py, so friends on other networks can join any time." },
+        { "label": "Always up to date", "text": "Updates download in the background and install themselves, on every platform." },
+        { "label": "Skip the night", "text": "Sleep through the dark in a few seconds; in co-op, everyone votes." },
+        { "label": "Runs on laptops", "text": "A big performance pass: about a third fewer draw calls, cheaper shadows and faster loading, tuned on integrated graphics." }
+      ],
+      "hosting_add": {
+        "flags": [["--public", "list it on the public server list in Join Co-op"]],
+        "faq": [
+          { "q": "How do people find my server?", "a": "Start it with --public and it shows up under Public servers in everyone's Join Co-op. Otherwise share the join code it prints. Players need a free Vortal account to play online (vortal.space/account)." },
+          { "q": "How do I moderate it?", "a": "Type ban, kick, mute, warn or announce in the server window (players, say and status too). World bans are saved with the world." }
+        ]
+      },
       "link": { "label": "Download for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
       "more": [
         { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },

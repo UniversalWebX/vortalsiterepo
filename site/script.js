@@ -567,7 +567,11 @@
     document.documentElement.dataset.route = 'page';
     const page = document.getElementById('page');
     const desc = document.querySelector('meta[name="description"]');
-    if (route === 'contact') {
+    if (route === 'account' && window.VortalAccount) {
+      document.title = 'Account · Vortal';
+      if (desc) desc.setAttribute('content', 'Your Vortal account: sign in, create an account, manage it.');
+      window.VortalAccount.render(page);
+    } else if (route === 'contact') {
       page.innerHTML = contactPageHTML();
       document.title = 'Contact · Vortal';
       if (desc) desc.setAttribute('content', 'Send Vortal a message: questions, bug reports, partnerships.');
@@ -674,7 +678,8 @@
 
   document.getElementById('foot-links').innerHTML =
     listed.map(p => `<li><a href="${href(p)}"${p === current ? ' aria-current="page"' : ''}>${esc(p.name)}</a></li>`).join('') +
-    `<li><a href="/contact"${route === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>`;
+    `<li><a href="/contact"${route === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>` +
+    `<li><a href="/account"${route === 'account' ? ' aria-current="page"' : ''}>Account</a></li>`;
 
   /* ---------- Products dropdown ---------- */
   const menuBtn = document.getElementById('menu-btn');

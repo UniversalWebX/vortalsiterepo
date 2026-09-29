@@ -97,6 +97,13 @@
     const l = p && p.launch;
     if (!l || typeof l !== 'object' || !released()) return p;
     const out = { ...p, ...l };
+    const add = l.hosting_add;
+    if (add && p.hosting) {
+      out.hosting = { ...p.hosting };
+      ['flags', 'faq', 'commands'].forEach(k => {
+        if (Array.isArray(add[k])) out.hosting[k] = [...(p.hosting[k] || []), ...add[k]];
+      });
+    }
     if (Array.isArray(l.drop_features) && Array.isArray(p.features)) {
       out.features = (Array.isArray(l.features) ? l.features : p.features).filter(f => !l.drop_features.includes(f && f.label));
     }
