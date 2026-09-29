@@ -4,6 +4,7 @@
    layer. This script only handles:
      POST /api/contact     the contact form → the inbox (D1)
      /api/account/*, /api/volatile/*   Vortal accounts (see accounts.js)
+     /api/community/*      the launch chat and announcements (community.js)
      /api/admin/*          the private inbox panel at vortal.space/admin
      email()               mail that Email Routing sends here: saved to the
                            inbox, optionally forwarded, and auto-answered
@@ -12,6 +13,7 @@
    ═══════════════════════════════════════════════════════════════ */
 import { EmailMessage } from 'cloudflare:email';
 import { accounts } from './accounts.js';
+import { community } from './community.js';
 
 const LIMITS = { name: 80, email: 200, topic: 40, subject: 200, body: 5000 };
 const PER_HOUR = 5;              // contact-form messages per visitor per hour
@@ -294,6 +296,7 @@ export default {
       if (url.pathname === '/api/contact' && request.method === 'POST') return await contact(request, env, ctx);
       if (url.pathname.startsWith('/api/admin/')) return await admin(request, env, url);
       if (url.pathname.startsWith('/api/account/') || url.pathname.startsWith('/api/volatile/')) return await accounts(request, env, url);
+      if (url.pathname.startsWith('/api/community/')) return await community(request, env, url, ctx);
       if (url.pathname === '/api/health') return json(200, { ok: true });
       return json(404, { error: 'unknown' });
     } catch (err) {

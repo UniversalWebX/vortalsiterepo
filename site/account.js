@@ -125,6 +125,9 @@
       form.querySelectorAll('button').forEach(b => { b.disabled = false; });
       if (out.ok) {
         store.set({ token: out.token, username: out.username });
+        // came from the chat (or elsewhere on the site)? go back there
+        const next = new URLSearchParams(location.search).get('next') || '';
+        if (/^\/(?!\/)[\w\-/]*$/.test(next) && next !== '/account') { location.href = next; return; }
         return render(page);
       }
       if (out.error === 'reserved') form.querySelector('#acct-claim').hidden = false;

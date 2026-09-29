@@ -32,7 +32,7 @@ const NAME_RE = /^[A-Za-z0-9_]{3,20}$/;
 const FAILS = 10;                          // wrong passwords per visitor+name per 15 minutes
 const SIGNUPS = 5;                         // new accounts per visitor per hour
 
-const json = (status, body) => new Response(JSON.stringify(body), {
+export const json = (status, body) => new Response(JSON.stringify(body), {
   status,
   headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*' },
 });
@@ -57,7 +57,7 @@ async function sameText(a, b) {
 
 const reserved = env => String(env.RESERVED || 'VolatileDev,Darian').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 
-async function visitorKey(request, env) {
+export async function visitorKey(request, env) {
   const ip = request.headers.get('CF-Connecting-IP') || 'local';
   return (await sha(`${env.IP_PEPPER || 'vortal.space'}|${ip}`)).slice(0, 24);
 }
@@ -68,7 +68,7 @@ async function tooMany(env, key, limit, windowMs) {
 }
 const fail = (env, key) => env.DB.prepare('INSERT INTO account_fails (key, at) VALUES (?, ?)').bind(key, Date.now()).run();
 
-function banInfo(a) {
+export function banInfo(a) {
   if (!a.banned_at) return null;
   if (a.ban_until && a.ban_until < Date.now()) return null;       // expired
   return { reason: a.ban_reason || '', until: a.ban_until || null, by: a.banned_by || '' };
@@ -83,7 +83,7 @@ async function newSession(env, account, label) {
 }
 
 // The signed-in account for this request, or null.
-async function authed(request, env) {
+export async function authed(request, env) {
   const m = /^Bearer\s+(\S+)$/.exec(request.headers.get('Authorization') || '');
   if (!m) return null;
   const th = await sha(m[1]);
@@ -94,8 +94,8 @@ async function authed(request, env) {
 }
 
 const pub = a => ({ username: a.username, role: a.role, created_at: a.created_at, ban: banInfo(a) });
-const byName = (env, name) => env.DB.prepare('SELECT * FROM accounts WHERE username_key = ?').bind(String(name || '').toLowerCase()).first();
-const log = (env, mod, action, target, reason) => env.DB.prepare('INSERT INTO mod_log (at, moderator, action, target, reason) VALUES (?, ?, ?, ?, ?)')
+export const byName = (env, name) => env.DB.prepare('SELECT * FROM accounts WHERE username_key = ?').bind(String(name || '').toLowerCase()).first();
+export const log = (env, mod, action, target, reason) => env.DB.prepare('INSERT INTO mod_log (at, moderator, action, target, reason) VALUES (?, ?, ?, ?, ?)')
   .bind(Date.now(), mod, action, String(target || '').slice(0, 40), String(reason || '').slice(0, 300)).run();
 
 async function body(request) {

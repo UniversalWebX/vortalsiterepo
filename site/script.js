@@ -343,6 +343,7 @@
           </div>
         </section>
         ${vids}
+        ${haz ? '<section class="wrap vcom-sec" id="community"></section>' : ''}
         ${gallery}
         ${body}
         ${host}
@@ -567,7 +568,12 @@
     document.documentElement.dataset.route = 'page';
     const page = document.getElementById('page');
     const desc = document.querySelector('meta[name="description"]');
-    if (route === 'account' && window.VortalAccount) {
+    if (route === 'community' && window.VortalCommunity) {
+      document.title = 'Community · Vortal';
+      if (desc) desc.setAttribute('content', 'News from Vortal and the live Volatile chat.');
+      document.querySelectorAll('.nav__link[href="/community"]').forEach(a => a.setAttribute('aria-current', 'page'));
+      window.VortalCommunity.page(page);
+    } else if (route === 'account' && window.VortalAccount) {
       document.title = 'Account · Vortal';
       if (desc) desc.setAttribute('content', 'Your Vortal account: sign in, create an account, manage it.');
       window.VortalAccount.render(page);
@@ -581,6 +587,8 @@
       page.innerHTML = current ? productPageHTML(current) : missingHTML();
       if (current) shots = current.gallery;
       wireVideos(page);
+      const com = page.querySelector('#community');
+      if (com && window.VortalCommunity) window.VortalCommunity.mount(com, { heading: 'News &amp; chat' });
       // /volatile#server: jump to the hosting guide once it's on the page
       if (current && location.hash.length > 1) {
         const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
@@ -679,6 +687,7 @@
   document.getElementById('foot-links').innerHTML =
     listed.map(p => `<li><a href="${href(p)}"${p === current ? ' aria-current="page"' : ''}>${esc(p.name)}</a></li>`).join('') +
     `<li><a href="/contact"${route === 'contact' ? ' aria-current="page"' : ''}>Contact</a></li>` +
+    `<li><a href="/community"${route === 'community' ? ' aria-current="page"' : ''}>Community</a></li>` +
     `<li><a href="/account"${route === 'account' ? ' aria-current="page"' : ''}>Account</a></li>`;
 
   /* ---------- Products dropdown ---------- */
