@@ -53,10 +53,10 @@ window.VORTAL_PRODUCTS = [
       { "label": "Runs on laptops", "text": "A big performance pass: about a third fewer draw calls, cheaper shadows and faster loading, tuned on integrated graphics." }
     ],
     "note": "Windows: unzip and run Volatile.exe. Mac: unzip, move Volatile to Applications, then right-click it and choose Open. We're not on the Mac App Store yet, so macOS flags Volatile as coming from an unidentified developer; if it's still blocked, open System Settings, then Privacy & Security, and click Open Anyway. The first launch takes a minute or two while macOS prepares the graphics. Android: open the APK on your phone and allow the install. Volatile updates itself automatically. To host a world that stays online, run server.py (it's in the Windows download, and the Linux server download is made for a VPS), then share the join code it prints. Stuck or found a bug? Use Support in the game's menu.",
-    "link": { "label": "Download beta for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
+    "link": { "label": "Download beta for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip", "platform": "windows" },
     "more": [
-      { "label": "Download beta for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
-      { "label": "Download beta for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
+      { "label": "Download beta for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip", "platform": "mac" },
+      { "label": "Download beta for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk", "platform": "android" },
       { "label": "Beta dedicated server for Linux (28 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip", "minor": true }
     ],
     "videos": [
@@ -64,7 +64,18 @@ window.VORTAL_PRODUCTS = [
       { "id": "e6bSVCToKPc", "title": "Volatile 1.0 gameplay test" }
     ],
     "launch": {
-      "spec": "1.0 · Windows · Mac · Android · crossplay co-op for up to 8",
+      "kind": "PC, Mac, Android & Chromebook",
+      "spec": "1.0 · Windows · Mac · Android · Chromebook · crossplay co-op for up to 8",
+      "howtos": [
+        { "id": "chromebook", "title": "Playing on a Chromebook", "steps": [
+          "Turn on Linux: Settings, then About ChromeOS, then Developers, then Linux development environment, then Turn on.",
+          "In the same Linux settings, open Develop Android apps and turn on Enable ADB debugging. Your Chromebook restarts.",
+          "Download Volatile for Chromebook above, then move Volatile-android.apk into Linux files in the Files app.",
+          "Open the Terminal app and run these three lines, accepting the debugging prompt when it appears: `sudo apt install -y adb`, then `adb connect arc`, then `adb install Volatile-android.apk`",
+          "Volatile is now in your launcher. It plays with keyboard and mouse; on a touchscreen Chromebook, Settings, then Game, then Controls switches to touch.",
+          "School and work Chromebooks usually block Linux and debugging. If yours does, ask whoever manages it."
+        ] }
+      ],
       "features": [
         { "label": "Automate", "text": "Drill → Smelt → Construct → Store" },
         { "label": "Worker bots", "text": "Build robots and order them to mine, feed the Terminal, refuel generators, or stand guard." },
@@ -87,10 +98,11 @@ window.VORTAL_PRODUCTS = [
           { "q": "How do I moderate it?", "a": "Type ban, kick, mute, warn or announce in the server window (players, say and status too). World bans are saved with the world." }
         ]
       },
-      "link": { "label": "Download for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip" },
+      "link": { "label": "Download for Windows (37 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-win64.zip", "platform": "windows" },
       "more": [
-        { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip" },
-        { "label": "Download for Android (26 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk" },
+        { "label": "Download for Mac (59 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-macOS.zip", "platform": "mac" },
+        { "label": "Download for Android (54 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk", "platform": "android" },
+        { "label": "Download for Chromebook (54 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-android.apk", "platform": "chromebook", "hint": "Installs as an Android app: see Playing on a Chromebook further down this page for the steps." },
         { "label": "Dedicated server for Linux (28 MB)", "url": "https://github.com/UniversalWebX/vortalsiterepo/raw/refs/heads/volatile-download/Volatile-linux-server.zip", "minor": true }
       ]
     },

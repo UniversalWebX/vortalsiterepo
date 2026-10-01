@@ -44,6 +44,7 @@
           el.classList.add('is-out');
           el.querySelector('.vcount__label').lastChild.textContent = 'Volatile 1.0 is out now';
           el.querySelector('.vcount__time').hidden = true;
+          if (when) when.hidden = true;
           return;
         }
         const d = Math.floor(left / 86400000); left -= d * 86400000;
@@ -102,14 +103,53 @@
     return `<div><dt>${esc(f.label)}</dt><dd>${body}</dd></div>`;
   }
 
+  /* ---------- Downloads: one button for your platform, the rest in a dropdown ---------- */
+  function myPlatform() {
+    const ua = navigator.userAgent || '';
+    if (/CrOS/.test(ua)) return 'chromebook';
+    if (/Android/i.test(ua)) return 'android';
+    if (/iPhone|iPad|iPod/.test(ua)) return '';
+    if (/Mac/.test(ua)) return 'mac';
+    if (/Win/.test(ua)) return 'windows';
+    return '';
+  }
+  // list: [{label, url, platform, minor, hint}]; minor ones (the server) sit at the end
+  function downloadsHTML(list, haz) {
+    const dls = list.filter(d => V.safeUrl(d.url));
+    if (!dls.length) return '';
+    const mine = myPlatform();
+    const main = dls.find(d => d.platform && d.platform === mine && !d.minor) || dls.find(d => !d.minor) || dls[0];
+    const rest = [...dls.filter(d => !d.minor), ...dls.filter(d => d.minor)];
+    return `
+      <div class="dl">
+        <a class="btn ${haz ? 'btn--haz' : 'btn--solid'} dl__main" href="${esc(main.url)}" target="_blank" rel="noopener">${esc(main.label)} <span aria-hidden="true">&#8595;</span></a>
+        ${rest.length > 1 ? `
+        <details class="dl__more">
+          <summary class="btn ${haz ? 'btn--line btn--line-haz' : 'btn--line'}">All platforms <span class="dl__caret" aria-hidden="true">&#9662;</span></summary>
+          <ul class="dl__menu">
+            ${rest.map(d => `
+            <li class="${d === main ? 'is-mine' : ''}${d.minor ? ' is-minor' : ''}">
+              <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.label)}${d === main ? ' <span class="dl__you">your device</span>' : ''}</a>
+              ${d.hint ? `<small>${esc(d.hint)}</small>` : ''}
+            </li>`).join('')}
+          </ul>
+        </details>` : ''}
+      </div>`;
+  }
+  // close an open dropdown when you click elsewhere or press Escape
+  document.addEventListener('click', e => document.querySelectorAll('.dl__more[open]').forEach(d => { if (!d.contains(e.target)) d.open = false; }));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.dl__more[open]').forEach(d => { d.open = false; }); });
+
   function actionsHTML(p) {
     const url = V.safeUrl(p.link.url), src = V.safeUrl(p.source), guide = V.safeUrl(p.guide.url);
     const more = p.more.filter(m => V.safeUrl(m.url));
     if (!url && !src && !guide && !more.length) return '';
+    const several = url && more.length > 0;
     return `
       <div class="release__actions">
-        ${url ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
-        ${more.map(m => `<a class="btn btn--line" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.label)} <span aria-hidden="true">&#8599;</span></a>`).join('')}
+        ${several ? downloadsHTML([p.link, ...more], false) : ''}
+        ${url && !several ? `<a class="btn btn--solid" href="${esc(url)}" target="_blank" rel="noopener">${esc(p.link.label || `Open ${p.name}`)} <span aria-hidden="true">&#8599;</span></a>` : ''}
+        ${!several ? more.map(m => `<a class="btn btn--line" href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.label)} <span aria-hidden="true">&#8599;</span></a>`).join('') : ''}
         ${guide ? `<a class="btn ${url ? 'btn--line' : 'btn--solid'}" href="${esc(guide)}" target="_blank" rel="noopener">${esc(p.guide.label || 'Read the guide')} <span aria-hidden="true">&#8599;</span></a>` : ''}
         ${src ? `<a class="btn btn--line" href="${esc(src)}" target="_blank" rel="noopener">View source <span aria-hidden="true">&#8599;</span></a>` : ''}
       </div>`;
@@ -302,6 +342,11 @@
           <header class="section-head section-head--tight"><h2>What it does</h2></header>
           ${feats.length ? `<dl class="features features--page">${feats.map(featureHTML).join('')}</dl>` : ''}
           ${p.note ? `<p class="callout">${richText(p.note)}</p>` : ''}
+          ${p.howtos.map(h => `
+          <details class="howto" id="${esc(h.id)}">
+            <summary>${esc(h.title)}</summary>
+            <ol>${h.steps.map(st => `<li>${richText(st)}</li>`).join('')}</ol>
+          </details>`).join('')}
         </section>`
       : `
         <section class="wrap product-body">
@@ -592,6 +637,7 @@
       // /volatile#server: jump to the hosting guide once it's on the page
       if (current && location.hash.length > 1) {
         const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        if (target && target.tagName === 'DETAILS') target.open = true;
         if (target) requestAnimationFrame(() => target.scrollIntoView());
       }
       document.title = current ? `${current.name} · Vortal` : 'Page not found · Vortal';
@@ -604,8 +650,7 @@
       const badges = [star.kind, ...(star.spec ? star.spec.split('·').map(s => s.trim()).filter(Boolean) : [])];
       document.getElementById('vhero-badges').innerHTML = badges.map((b, i) => `<span class="${i === 0 ? 'vbadge vbadge--hot' : 'vbadge'}">${esc(b)}</span>`).join('');
       const dl = [star.link, ...star.more].filter(l => V.safeUrl(l.url) && !l.minor);   // minor links (e.g. the server) stay on the product page
-      document.getElementById('vhero-cta').innerHTML = dl.map((l, i) =>
-        `<a class="btn ${i === 0 ? 'btn--haz' : 'btn--line btn--line-haz'}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} <span aria-hidden="true">&#8595;</span></a>`).join('') +
+      document.getElementById('vhero-cta').innerHTML = downloadsHTML(dl, true) +
         `<a class="btn btn--line btn--line-haz" href="${href(star)}">Details</a>`;
       document.getElementById('vgal-grid').innerHTML = galleryHTML(shots);
       const watch = document.getElementById('watch');
@@ -994,7 +1039,7 @@
     };
     // the full note above the first group of download buttons, a short one above the rest
     const groups = new Set();
-    document.querySelectorAll('a[data-paused-href]').forEach(a => groups.add(a.parentElement));
+    document.querySelectorAll('a[data-paused-href]').forEach(a => groups.add(a.closest('.dl') || a.parentElement));
     [...groups].forEach((g, i) => g.parentElement.insertBefore(note(i === 0), g));
   }
   applyDownloadPause();

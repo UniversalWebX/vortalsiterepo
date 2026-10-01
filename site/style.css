@@ -1060,3 +1060,34 @@ a.is-paused { opacity: .45; cursor: not-allowed; pointer-events: none; filter: g
 @media (max-width: 600px) {
   .vcount-wide .vcount__unit b { font-size: clamp(30px, 11vw, 48px); }
 }
+
+/* Downloads: your platform first, the rest in a dropdown (script.js downloadsHTML) */
+.dl { position: relative; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.dl__more { position: relative; }
+.dl__more > summary { list-style: none; cursor: pointer; user-select: none; }
+.dl__more > summary::-webkit-details-marker { display: none; }
+.dl__caret { display: inline-block; transition: transform .15s; }
+.dl__more[open] .dl__caret { transform: rotate(180deg); }
+.dl__menu {
+  position: absolute; z-index: 40; left: 0; top: calc(100% + 6px); min-width: min(360px, 86vw); margin: 0; padding: 6px; list-style: none;
+  background: var(--panel); border: 1px solid var(--line-2); box-shadow: 0 14px 40px rgba(0, 0, 0, .55);
+}
+.dl__menu li { padding: 2px 0; }
+.dl__menu li + li { border-top: 1px solid var(--line); }
+.dl__menu a { display: block; padding: 10px 12px; color: var(--text); font: 600 14px/1.3 var(--body); text-decoration: none; }
+.dl__menu a:hover, .dl__menu a:focus-visible { background: var(--panel-2); color: #fff; }
+.dl__menu li.is-mine a { color: var(--haz-hi); }
+.dl__menu li.is-minor a { color: var(--dim); font-weight: 500; }
+.dl__menu small { display: block; padding: 0 12px 8px; color: var(--faint); font-size: 12.5px; line-height: 1.4; }
+.dl__you { margin-left: 6px; padding: 2px 6px; border: 1px solid var(--haz); font: 600 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--haz-hi); vertical-align: 2px; }
+.dl__menu a.is-paused { pointer-events: none; }
+@media (max-width: 600px) {
+  .dl, .dl__main, .dl__more, .dl__more > summary { width: 100%; }
+  .dl__menu { position: static; min-width: 0; margin-top: 6px; }
+}
+
+/* How-to boxes under "What it does" (e.g. Playing on a Chromebook) */
+.howto { margin-top: 16px; border: 1px solid var(--line); background: var(--panel); }
+.howto > summary { cursor: pointer; padding: 14px 16px; font: 600 17px/1.3 var(--display); color: var(--text); }
+.howto[open] > summary { border-bottom: 1px solid var(--line); }
+.howto ol { margin: 0; padding: 14px 18px 16px 38px; display: grid; gap: 8px; color: var(--dim); font-size: 15px; line-height: 1.55; }
