@@ -336,11 +336,11 @@
               <h1 class="product__name">${esc(p.name)}</h1>
               ${p.summary ? `<p class="product__lede">${esc(p.summary)}</p>` : ''}
               ${actionsHTML(p)}
-              ${p.id === 'volatile' ? COUNT_HTML : ''}
               <p class="product__ask">Questions about ${esc(p.name)}? <a href="/contact?topic=${encodeURIComponent(p.name)}">Send us a message</a></p>
             </div>
             ${visualHTML(p)}
           </div>
+          ${p.id === 'volatile' ? `<div class="wrap vcount-wide">${COUNT_HTML}</div>` : ''}
         </section>
         ${vids}
         ${haz ? '<section class="wrap vcom-sec" id="community"></section>' : ''}
